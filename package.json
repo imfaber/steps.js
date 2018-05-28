@@ -1,0 +1,46 @@
+{
+  "name": "tutorial.js",
+  "version": "1.0.0",
+  "description": "The HTML tutorial framework",
+  "homepage": "http://revealjs.com",
+  "subdomain": "revealjs",
+  "main": "dist/tutorial.js",
+  "author": {
+    "name": "Fabrizio Meinero",
+    "email": "fabrizio@imfaber.me",
+    "web": "https://imfaber.me"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/imfaber/tutorial.js.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "mustache": "^2.3.0",
+    "node-sass": "^4.9.0",
+    "parcel-bundler": "^1.8.1",
+    "sinon": "^5.0.10"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "scripts": {
+    "build": "parcel build --detailed-report --no-minify --no-source-maps src/js/tutorial.js --out-file tutorial.js && parcel build --detailed-report --no-source-maps src/js/tutorial.js --out-file tutorial.min.js",
+    "prepare": "npm run build",
+    "watch": "parcel watch src/js/tutorial.js --out-file tutorial.js",
+    "dev": "parcel demo --open --out-dir dev",
+    "test": "mocha --require babel-core/register --recursive ./test",
+    "test:watch": "mocha --require babel-core/register --recursive ./test --reporter min --watch"
+  }
+}
