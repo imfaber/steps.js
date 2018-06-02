@@ -1,4 +1,3 @@
-import Mustache from "mustache";
 import {DOM_SELECTORS, ACTIVE_CLASSES, root} from "./config";
 
 export default class Router {
@@ -98,24 +97,26 @@ export default class Router {
     aside.className = 'tutorial-js__nav';
     root.dom.tutorial.insertBefore(aside, root.dom.stepsWrapper);
     root.dom.nav = root.dom.tutorial.querySelector(DOM_SELECTORS.nav);
-    root.dom.nav.innerHTML = Mustache.render(`
+
+    root.dom.nav.innerHTML = `
         <nav>
             <ul>
-              {{#routes}}
-                <li class="tutorial-js-nav__item" data-id="{{step}}">
-                    <a href="#{{path}}">
-                        <i>{{step}}</i>
-                        <span>{{label}}</span>
-                    </a>
-                </li>
-              {{/routes}}
+                ${this.routes.map(route => `
+                  <li class="tutorial-js-nav__item" data-id="${route.step}">
+                      <a href="#${route.path}">
+                          <i>${route.step}</i>
+                          <span>${route.label}</span>
+                      </a>
+                  </li>
+                `).join('')}
             </ul>
         </nav>
-    `, {routes: this.routes});
+    `;
 
     root.dom.navItems = root.dom.nav.querySelectorAll('li');
   }
 
 }
+
 
 

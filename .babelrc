@@ -1,0 +1,12 @@
+{
+  "presets": [
+    ["env", {
+      "modules": false
+    }]
+  ],
+  "env": {
+    "test": {
+      "presets": ["es2015"]
+    }
+  }
+}

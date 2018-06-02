@@ -1,5 +1,5 @@
-@import "reset";
-@import "layout";
+@import "./reset";
+@import "./layout";
 
 .tutorial-js__steps > section:not(.tutorial-js__step--selected) {
   display: none;

@@ -2,11 +2,11 @@ import toBoolean from "./utils/toBoolean";
 import Step from "./step";
 import Router from "./router";
 import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, root} from "./config";
-import '../sass/main.scss'
 
 export default class Tutorial {
 
   constructor(options) {
+
 
     options = Object.assign(TUTORIAL_DEFAULT_OPTIONS, options);
 
@@ -70,10 +70,3 @@ export default class Tutorial {
   }
 
 }
-
-
-// Init tutorial when DOM is ready.
-document.addEventListener("DOMContentLoaded", (event) => {
-  new Tutorial(document.querySelector(DOM_SELECTORS.tutorialWrapper).dataset);
-});
-

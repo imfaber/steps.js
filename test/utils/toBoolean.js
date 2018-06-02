@@ -1,4 +1,4 @@
-import toBoolean from '../../src/utils/toBoolean';
+import toBoolean from '../../src/js/utils/toBoolean';
 import { expect } from 'chai';
 
 describe('toBoolean()', () => {
