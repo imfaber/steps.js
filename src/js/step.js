@@ -1,4 +1,4 @@
-import {DOM_SELECTORS, root} from "./config";
+import {DOM_SELECTORS} from "./config";
 
 export default class Step {
 

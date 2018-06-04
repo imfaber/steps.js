@@ -7,7 +7,6 @@ export default class Tutorial {
 
   constructor(options) {
 
-
     options = Object.assign(TUTORIAL_DEFAULT_OPTIONS, options);
 
     // Set tutorial properies.

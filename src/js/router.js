@@ -6,7 +6,7 @@ export default class Router {
 
     // Add path to routes.
     this.routes = routes.map(r => {
-      r.path = `path-${r.step}`;
+      r.path = `step-${r.step}`;
       return r;
     });
 
@@ -14,7 +14,7 @@ export default class Router {
     this.attachNav();
 
     // Listen for hash changes.
-    window.addEventListener("hashchange", (e) => {
+    window.addEventListener("hashchange", () => {
       const route = this.findBy({
         name: 'path',
         value: location.hash.split('#')[1],
@@ -81,9 +81,12 @@ export default class Router {
       .classList.add(ACTIVE_CLASSES.navItemSelected);
     location.hash = route.path;
 
-    root.dom.navItems.forEach((elem, i) => {
+    root.dom.navItems.forEach((elem) => {
       if (elem.dataset.id < id) {
         elem.classList.add(ACTIVE_CLASSES.navItemCompleted);
+      }
+      else {
+        elem.classList.remove(ACTIVE_CLASSES.navItemCompleted);
       }
     });
   }

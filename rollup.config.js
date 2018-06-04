@@ -64,5 +64,9 @@ export default {
     format:    'iife',
     sourceMap: true,
   },
+  watch:  {
+    include:     'src/**/*',
+    clearScreen: false
+  },
   plugins
 };

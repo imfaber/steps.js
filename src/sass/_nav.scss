@@ -1,0 +1,101 @@
+.tutorial-js__nav {
+  border-right: 1px solid $grey-lighter;
+  background: $white;
+
+  ul {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+  }
+
+  li {
+    a {
+      border-radius: $radius;
+      padding: 15px;
+      display: block;
+      text-decoration: none;
+      position: relative;
+      transition: all .4s ease;
+      color: $link;
+      font-size: $size-small;
+
+      &:before,
+      &:after {
+        content: '';
+        display: block;
+        border-left: 1px solid $grey-light;
+        border-right: 1px solid $grey-light;
+        width: 0;
+        z-index: 1;
+        position: absolute;
+        left: 26px;
+      }
+
+      &:before {
+        top: 0;
+        bottom: 50%;
+      }
+
+      &:after {
+        top: 50%;
+        bottom: 0;
+      }
+    }
+
+    i {
+      border-radius: 50%;
+      background: $grey-light;
+      color: $white;
+      display: inline-block;
+      width: 25px;
+      height: 25px;
+      line-height: 25px;
+      text-align: center;
+      margin-right: 10px;
+      position: relative;
+      z-index: 2;
+      transition: all .4s ease;
+      font-style: normal;
+      font-weight: $weight-bold;
+    }
+
+    &.tutorial-js-nav__item--selected {
+      a {
+        background: $grey-lighter;
+      }
+      i {
+        background: $color-primary;
+      }
+    }
+
+    &.tutorial-js-nav__item--completed {
+      i {
+        background: $color-primary;
+      }
+
+
+      a:after {
+        border-color: $color-primary;
+      }
+
+      + .tutorial-js-nav__item {
+        a:before {
+          border-color: $color-primary;
+        }
+      }
+    }
+
+  }
+
+
+
+
+  li:first-child a:before {
+    display: none;
+  }
+
+  li:last-child a:after {
+    display: none;
+  }
+
+}
