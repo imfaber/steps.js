@@ -1,4 +1,5 @@
 import {DOM_SELECTORS, ACTIVE_CLASSES, root} from "./config";
+import htmlElement from "./utils/createElementFromHTML";
 
 export default class Router {
 
@@ -16,7 +17,7 @@ export default class Router {
     // Listen for hash changes.
     window.addEventListener("hashchange", () => {
       const route = this.findBy({
-        name: 'path',
+        name:  'path',
         value: location.hash.split('#')[1],
       });
       this.go(route.step);
@@ -28,9 +29,9 @@ export default class Router {
    * @param id
    * @returns {*}
    */
-  find(id){
+  find(id) {
     return this.findBy({
-      name: 'step',
+      name:  'step',
       value: id,
     });
   }
@@ -41,7 +42,7 @@ export default class Router {
    * @param value
    * @returns {*|T}
    */
-  findBy({name, value}){
+  findBy({name, value}) {
     return this.routes.find(r => {
       return (r[name] === value);
     });
@@ -96,26 +97,25 @@ export default class Router {
    * Attach nav to DOM.
    */
   attachNav() {
-    let aside = document.createElement('aside');
-    aside.className = 'tutorial-js__nav';
-    root.dom.tutorial.insertBefore(aside, root.dom.stepsWrapper);
-    root.dom.nav = root.dom.tutorial.querySelector(DOM_SELECTORS.nav);
-
-    root.dom.nav.innerHTML = `
-        <nav>
-            <ul>
+    const aside = htmlElement(`
+       <aside class="${DOM_SELECTORS.nav.replace('.', '')}">
+          <nav>
+             <ul>
                 ${this.routes.map(route => `
-                  <li class="tutorial-js-nav__item" data-id="${route.step}">
+                   <li class="tutorial-js-nav__item" data-id="${route.step}">
                       <a href="#${route.path}">
                           <i>${route.step}</i>
                           <span>${route.label}</span>
                       </a>
-                  </li>
+                   </li>
                 `).join('')}
-            </ul>
-        </nav>
-    `;
+             </ul>
+          </nav>
+       </aside>
+    `);
 
+    root.dom.tutorial.insertBefore(aside, root.dom.stepsWrapper);
+    root.dom.nav = root.dom.tutorial.querySelector(DOM_SELECTORS.nav);
     root.dom.navItems = root.dom.nav.querySelectorAll('li');
   }
 

@@ -17,6 +17,7 @@ export default class Step {
 
     // Cache DOM element
     this.domElement = document.querySelector(`${DOM_SELECTORS.steps}[data-step="${this.step}"]`);
+
   }
 }
 

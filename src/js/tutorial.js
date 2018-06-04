@@ -2,6 +2,8 @@ import toBoolean from "./utils/toBoolean";
 import Step from "./step";
 import Router from "./router";
 import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, root} from "./config";
+import htmlElement from "./utils/createElementFromHTML";
+
 
 export default class Tutorial {
 
@@ -37,6 +39,17 @@ export default class Tutorial {
     // Init router.
     root.router = new Router(this.steps);
     root.router.go(this.selected);
+
+    // Attach header.
+    const timeReamining = htmlElement(`
+      <header>
+        <h3>${this.title}</h3>
+        <div class="tutorial-js__time-remaining"><span></span></div>
+      </header>  
+    `);
+    root.dom.stepsWrapper.insertBefore(timeReamining, root.dom.steps[0]);
+    root.dom.timeRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
+
   }
 
   /**

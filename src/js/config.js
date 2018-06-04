@@ -40,6 +40,7 @@ export const DOM_SELECTORS = {
   nav:             '.tutorial-js__nav',
   stepsWrapper:    '.tutorial-js__steps',
   steps:           '.tutorial-js__steps section',
+  timeRemaining:   '.tutorial-js__time-remaining',
 };
 
 /**
@@ -47,7 +48,7 @@ export const DOM_SELECTORS = {
  * @type {*}
  */
 export const ACTIVE_CLASSES = {
-  stepSelected: 'tutorial-js__step--selected',
-  navItemSelected: 'tutorial-js-nav__item--selected',
+  stepSelected:     'tutorial-js__step--selected',
+  navItemSelected:  'tutorial-js-nav__item--selected',
   navItemCompleted: 'tutorial-js-nav__item--completed',
 };
