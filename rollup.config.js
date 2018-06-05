@@ -37,18 +37,8 @@ plugins.push(babel(babelrc()));
 // Production
 if (process.env.BUILD === 'production') {
   outputFile = `${outputFile.slice(0, -3)}.min.js`;
-  plugins.push(uglify({
-    output: {
-      preamble: `/**
- * tutorial.min.js ${pkg.version}
- * MIT licensed
- *
- * Copyright (C) 2018 Fabrizio Meinero, http://imfaber.me
- */`
-    }
-  }));
+  plugins.push(uglify());
 }
-
 
 // Dev
 if (process.env.BUILD !== 'production') {
@@ -61,8 +51,14 @@ export default {
   input:  'src/js/main.js',
   output: {
     file:      outputFile,
-    format:    'iife',
+    format:    'es',
     sourceMap: true,
+    banner: `/**
+ * tutorial.min.js ${pkg.version}
+ * MIT licensed
+ *
+ * Copyright (C) 2018 Fabrizio Meinero, http://imfaber.me
+ */`,
   },
   watch:  {
     include:     'src/**/*',

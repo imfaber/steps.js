@@ -14,7 +14,6 @@ export default class Tutorial {
     // Set tutorial properies.
     this.title = options.title;
     this.selected = parseInt(options.selected);
-    this.duration = parseInt(options.duration);
     this.toolbar = toBoolean(options.toolbar);
     this.arrows = toBoolean(options.arrows);
 
@@ -25,6 +24,9 @@ export default class Tutorial {
     if (root.dom.stepsWrapper) {
       root.dom.steps = root.dom.stepsWrapper.querySelectorAll(DOM_SELECTORS.steps);
     }
+
+    // Cache tutorial.
+    root.tutorial = this;
 
     // Do not continue if there are no steps.
     if (!this.hasSteps()) return;
@@ -38,18 +40,18 @@ export default class Tutorial {
 
     // Init router.
     root.router = new Router(this.steps);
-    root.router.go(this.selected);
 
     // Attach header.
-    const timeReamining = htmlElement(`
+    if (this.toolbar) {
+      const timeReamining = htmlElement(`
       <header>
         <h3>${this.title}</h3>
         <div class="tutorial-js__time-remaining"><span></span></div>
       </header>  
     `);
-    root.dom.stepsWrapper.insertBefore(timeReamining, root.dom.steps[0]);
-    root.dom.timeRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
-
+      root.dom.stepsWrapper.insertBefore(timeReamining, root.dom.steps[0]);
+      root.dom.timeRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
+    }
   }
 
   /**

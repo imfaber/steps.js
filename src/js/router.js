@@ -22,6 +22,33 @@ export default class Router {
       });
       this.go(route.step);
     });
+
+    // Init route
+    const currentStep = this.getStepFromHash();
+
+    if (currentStep && this.find(currentStep)) {
+      this.go(currentStep);
+    }
+    else {
+      this.go(root.tutorial.selected);
+    }
+  }
+
+  /**
+   * Return the step number from the location hash
+   * @returns {int|null}
+   */
+  getStepFromHash() {
+
+    if (!location.hash) {
+      return null;
+    }
+
+    const step = parseInt(location.hash.split('#')[1].replace('step-', ''));
+    if (Number.isInteger(step)) {
+      return step;
+    }
+    return null;
   }
 
   /**
@@ -75,6 +102,11 @@ export default class Router {
    * @param id
    */
   activateRoute(id) {
+
+    if (!id) {
+      return;
+    }
+
     let route = this.find(id);
     route.domElement.classList.add(ACTIVE_CLASSES.stepSelected);
     root.dom.nav

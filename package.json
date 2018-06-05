@@ -52,7 +52,7 @@
     "prepare": "npm run build",
     "build": "rollup -c --environment BUILD:production",
     "build:dev": "rollup -c",
-    "watch": "rollup -c -w",
+    "watch": "rollup -c -w -m",
     "serve": "http-server -c-1 -o -a localhost",
     "start": "npm run serve | npm run watch | nswatch",
     "test": "BABEL_ENV=test mocha --require babel-core/register --recursive ./test",
