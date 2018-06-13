@@ -1,9 +1,8 @@
 import toBoolean from "./utils/toBoolean";
 import Step from "./step";
+import Toolbar from "./toolbar";
 import Router from "./router";
 import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, root} from "./config";
-import htmlElement from "./utils/createElementFromHTML";
-
 
 export default class Tutorial {
 
@@ -16,6 +15,7 @@ export default class Tutorial {
     this.selected = parseInt(options.selected);
     this.toolbar = toBoolean(options.toolbar);
     this.arrows = toBoolean(options.arrows);
+    this.duration = 0;
 
     // Cache tutorial DOM elements.
     root.dom = {};
@@ -36,21 +36,15 @@ export default class Tutorial {
     for (let i = 0; i < root.dom.steps.length; ++i) {
       root.dom.steps[i].dataset.id = `tutorial-js-step-${i}`;
       this.steps.push(new Step(root.dom.steps[i].dataset));
+      this.duration += this.steps[i].duration;
     }
 
     // Init router.
-    root.router = new Router(this.steps);
+    root.router = new Router();
 
-    // Attach header.
+    // Init toolbar
     if (this.toolbar) {
-      const timeReamining = htmlElement(`
-      <header>
-        <h3>${this.title}</h3>
-        <div class="tutorial-js__time-remaining"><span></span></div>
-      </header>  
-    `);
-      root.dom.stepsWrapper.insertBefore(timeReamining, root.dom.steps[0]);
-      root.dom.timeRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
+      root.toolbar = new Toolbar();
     }
   }
 

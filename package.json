@@ -45,7 +45,9 @@
     "dist"
   ],
   "watch": {
-    "./src//sass/_*": ["build:dev"]
+    "./src//sass/_*": [
+      "build:dev"
+    ]
   },
   "scripts": {
     "lint": "eslint src test tools",
@@ -58,7 +60,5 @@
     "test": "BABEL_ENV=test mocha --require babel-core/register --recursive ./test",
     "test:watch": "BABEL_ENV=test mocha --require babel-core/register --recursive ./test --reporter min --watch"
   },
-  "dependencies": {
-    "handlebars": "^4.0.11"
-  }
+  "dependencies": {}
 }

@@ -3,10 +3,10 @@ import htmlElement from "./utils/createElementFromHTML";
 
 export default class Router {
 
-  constructor(routes) {
+  constructor() {
 
     // Add path to routes.
-    this.routes = routes.map(r => {
+    this.routes = root.tutorial.steps.map(r => {
       r.path = `step-${r.step}`;
       return r;
     });

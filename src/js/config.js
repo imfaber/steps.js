@@ -1,9 +1,9 @@
 /**
- * A root global object to share data across componenst
+ * A root global object to share data across modules.
  *
  * @type {*}
  */
-export let root = window.tutorialJS || {};
+export let root = {};
 
 /**
  * Tutorial default options.
