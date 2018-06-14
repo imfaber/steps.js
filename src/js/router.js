@@ -14,6 +14,11 @@ export default class Router {
     // Create nav.
     this.attachNav();
 
+    // Create pagination.
+    if (root.tutorial.pagination) {
+      this.attachPagination();
+    }
+
     // Listen for hash changes.
     window.addEventListener("hashchange", () => {
       const route = this.findBy({
@@ -129,6 +134,15 @@ export default class Router {
     if (root.toolbar) {
       root.toolbar.updateRemainingMinutes();
     }
+
+    // Update button states
+    if (root.dom.buttonPrev) {
+      root.dom.buttonPrev.disabled = (id === 1);
+    }
+    if (root.dom.buttonNext) {
+      root.dom.buttonNext.disabled = (id === this.routes.length);
+    }
+
   }
 
 
@@ -157,6 +171,45 @@ export default class Router {
     root.dom.nav = root.dom.tutorial.querySelector(DOM_SELECTORS.nav);
     root.dom.navItems = root.dom.nav.querySelectorAll('li');
   }
+
+  /**
+   * Attach pagination to DOM.
+   */
+  attachPagination() {
+    // Footer template.
+    const footer = htmlElement(`
+      <footer>
+        <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--prev">
+            <span>${root.tutorial.prevText}</span>
+        </button>
+        <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--next">
+            <span>${root.tutorial.nextText}</span>
+        </button>
+      </footer>
+    `);
+
+    // Append footer and cache button elements.
+    root.dom.stepsWrapper.appendChild(footer);
+    root.dom.buttonPrev = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--prev`);
+    root.dom.buttonNext = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--next`);
+
+    // Listen for clicks and go to step.
+    root.dom.buttonPrev.addEventListener("click", () => {
+      const activeStepId = this.getStepFromHash();
+      if (activeStepId > 1) {
+        this.go(activeStepId - 1)
+      }
+    });
+
+    root.dom.buttonNext.addEventListener("click", () => {
+      const activeStepId = this.getStepFromHash();
+      if (activeStepId < this.routes.length) {
+        this.go(activeStepId + 1)
+      }
+    });
+  }
+
+
 
 }
 

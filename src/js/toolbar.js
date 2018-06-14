@@ -14,14 +14,14 @@ export default class Toolbar {
   }
 
   attachToolbar () {
-    const timeRemaining = htmlElement(`
+    const header = htmlElement(`
       <header>
         <h3>${root.tutorial.title}</h3>
         <div class="${CSS_CLASSES.timeRemaining}"><span></span></div>
       </header>  
     `);
 
-    root.dom.stepsWrapper.insertBefore(timeRemaining, root.dom.steps[0]);
+    root.dom.stepsWrapper.insertBefore(header, root.dom.steps[0]);
     root.dom.minRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
     this.updateRemainingMinutes();
   }

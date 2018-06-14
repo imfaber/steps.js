@@ -8,13 +8,19 @@ export default class Tutorial {
 
   constructor(options) {
 
+    console.log(TUTORIAL_DEFAULT_OPTIONS);
+
     options = Object.assign(TUTORIAL_DEFAULT_OPTIONS, options);
+
+    console.log(options);
 
     // Set tutorial properies.
     this.title = options.title;
     this.selected = parseInt(options.selected);
     this.toolbar = toBoolean(options.toolbar);
-    this.arrows = toBoolean(options.arrows);
+    this.pagination = toBoolean(options.pagination);
+    this.prevText = options.prevText;
+    this.nextText = options.nextText;
     this.duration = 0;
     this.minRemaining = 0;
 

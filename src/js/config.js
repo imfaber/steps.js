@@ -25,10 +25,16 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
   toolbar: true,
 
   // Whether to display the arrows.
-  arrows: true,
+  pagination: true,
+
+  // Pagination text.
+  prevText: 'Previous',
+  nextText: 'Next',
 
   // Last time the tutorial was updated
   lastUpdate: null,
+
+
 };
 
 /**
@@ -39,6 +45,7 @@ export const CSS_CLASSES = {
   stepSelected:     'tutorial-js__step--selected',
   navItemSelected:  'tutorial-js-nav__item--selected',
   navItemCompleted: 'tutorial-js-nav__item--completed',
+  button:           'tutorial-js__button',
   timeRemaining:    'tutorial-js__time-remaining'
 };
 

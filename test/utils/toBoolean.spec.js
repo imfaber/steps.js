@@ -10,7 +10,7 @@ describe('toBoolean()', () => {
     expect(toBoolean('FaLse')).to.be.equal(false);
   });
 
-  it('should return the value when input boolean', () => {
+  it('should return the value when input is boolean', () => {
     expect(toBoolean(true)).to.be.equal(true);
     expect(toBoolean(false)).to.be.equal(false);
   });
