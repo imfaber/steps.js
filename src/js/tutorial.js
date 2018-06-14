@@ -16,6 +16,7 @@ export default class Tutorial {
     this.toolbar = toBoolean(options.toolbar);
     this.arrows = toBoolean(options.arrows);
     this.duration = 0;
+    this.minRemaining = 0;
 
     // Cache tutorial DOM elements.
     root.dom = {};
@@ -56,7 +57,7 @@ export default class Tutorial {
    */
   getStep(stepNumber) {
     return this.steps.find(s => {
-      return (s.step === stepNumber);
+      return (s.step === parseInt(stepNumber));
     });
   }
 

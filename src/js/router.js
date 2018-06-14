@@ -1,4 +1,4 @@
-import {DOM_SELECTORS, ACTIVE_CLASSES, root} from "./config";
+import {DOM_SELECTORS, CSS_CLASSES, root} from "./config";
 import htmlElement from "./utils/createElementFromHTML";
 
 export default class Router {
@@ -81,16 +81,16 @@ export default class Router {
    */
   go(id) {
     // Remove active class from step.
-    const activeStep = root.dom.stepsWrapper.querySelector(`.${ACTIVE_CLASSES.stepSelected}`);
+    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`);
     if (activeStep) {
-      activeStep.classList.remove(ACTIVE_CLASSES.stepSelected);
+      activeStep.classList.remove(CSS_CLASSES.stepSelected);
     }
 
     // Remove active class from nav item.
-    const activeNavItem = root.dom.nav.querySelector(`.${ACTIVE_CLASSES.navItemSelected}`);
+    const activeNavItem = root.dom.nav.querySelector(`.${CSS_CLASSES.navItemSelected}`);
     if (activeNavItem) {
       activeNavItem
-        .classList.remove(ACTIVE_CLASSES.navItemSelected);
+        .classList.remove(CSS_CLASSES.navItemSelected);
     }
 
     // Activate new route.
@@ -108,20 +108,27 @@ export default class Router {
     }
 
     let route = this.find(id);
-    route.domElement.classList.add(ACTIVE_CLASSES.stepSelected);
+    route.domElement.classList.add(CSS_CLASSES.stepSelected);
     root.dom.nav
       .querySelector(`li[data-id="${id}"]`)
-      .classList.add(ACTIVE_CLASSES.navItemSelected);
+      .classList.add(CSS_CLASSES.navItemSelected);
     location.hash = route.path;
 
+    root.tutorial.minRemaining = parseInt(root.tutorial.duration);
     root.dom.navItems.forEach((elem) => {
       if (elem.dataset.id < id) {
-        elem.classList.add(ACTIVE_CLASSES.navItemCompleted);
+        elem.classList.add(CSS_CLASSES.navItemCompleted);
+        root.tutorial.minRemaining -= parseInt(root.tutorial.getStep(elem.dataset.id).duration);
       }
       else {
-        elem.classList.remove(ACTIVE_CLASSES.navItemCompleted);
+        elem.classList.remove(CSS_CLASSES.navItemCompleted);
       }
     });
+
+    // Update remaining time in toolbar.
+    if (root.toolbar) {
+      root.toolbar.updateRemainingMinutes();
+    }
   }
 
 

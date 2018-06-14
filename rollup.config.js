@@ -51,7 +51,7 @@ export default {
   input:  'src/js/main.js',
   output: {
     file:      outputFile,
-    format:    'es',
+    format:    'iife',
     sourceMap: true,
     banner: `/**
  * tutorial.min.js ${pkg.version}
