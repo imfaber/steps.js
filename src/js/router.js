@@ -30,7 +30,7 @@ export default class Router {
     });
 
     // Init route
-    const currentStep = this.getStepFromHash();
+    const currentStep = Router.getStepFromHash();
 
     if (currentStep && this.find(currentStep)) {
       this.goTo(currentStep);
@@ -44,7 +44,7 @@ export default class Router {
    * Return the step number from the location hash
    * @returns {int|null}
    */
-  getStepFromHash() {
+  static getStepFromHash() {
 
     if (!location.hash) {
       return null;
@@ -127,9 +127,8 @@ export default class Router {
 
       // Then we loop all the items to add or remove the 'completed' class on each one.
       root.dom.navItems.forEach((elem) => {
-        if (elem.dataset.id < this.step) {
+        if (elem.dataset.id < route.step) {
           elem.classList.add(CSS_CLASSES.navItemCompleted);
-          root.tutorial.minRemaining -= parseInt(root.tutorial.getStep(elem.dataset.id).duration);
         }
         else {
           elem.classList.remove(CSS_CLASSES.navItemCompleted);
@@ -142,11 +141,6 @@ export default class Router {
       }
       if (root.dom.buttonNext) {
         root.dom.buttonNext.disabled = (route.step === this.routes.length);
-      }
-
-      // Update remaining time in toolbar.
-      if (root.toolbar) {
-        root.toolbar.updateRemainingMinutes();
       }
     }
   }
@@ -203,14 +197,14 @@ export default class Router {
 
     // Listen for clicks and updateCurrentRoute to step.
     root.dom.buttonPrev.addEventListener("click", () => {
-      const activeStepId = this.getStepFromHash();
+      const activeStepId = Router.getStepFromHash();
       if (activeStepId > 1) {
         this.goTo(activeStepId - 1);
       }
     });
 
     root.dom.buttonNext.addEventListener("click", () => {
-      const activeStepId = this.getStepFromHash();
+      const activeStepId = Router.getStepFromHash();
       if (activeStepId < this.routes.length) {
         this.goTo(activeStepId + 1);
       }

@@ -32,7 +32,7 @@ export default class Tutorial {
     root.tutorial = this;
 
     // Do not continue if there are no steps.
-    if (!this.hasSteps()) return;
+    if (!Tutorial.hasSteps()) return;
 
     // Create steps.
     this.steps = [];
@@ -76,7 +76,7 @@ export default class Tutorial {
    *
    * @returns {boolean}
    */
-  hasSteps() {
+  static hasSteps() {
     return typeof root.dom.steps !== 'undefined';
   }
 
@@ -104,5 +104,24 @@ export default class Tutorial {
     // Activate new step.
     this.getStep(id).enable();
 
+    // Update remaining time in toolbar.
+    Toolbar.updateRemainingMinutes();
+  }
+
+  /**
+   * Return the remaining minutes to complete the tutorial.
+   * @returns {number|*}
+   */
+  getRemainingMinutes() {
+    let minRemaining = this.duration,
+      stepElem = null;
+
+    for (let i = 0; i < root.dom.steps.length; i++) {
+      stepElem = root.dom.steps[i];
+      if (stepElem.dataset.step < Router.getStepFromHash()) {
+        minRemaining -= parseInt(stepElem.dataset.duration);
+      }
+    }
+    return minRemaining;
   }
 }
