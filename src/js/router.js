@@ -25,17 +25,18 @@ export default class Router {
         name:  'path',
         value: location.hash.split('#')[1],
       });
-      this.go(route.step);
+
+      this.goTo(route);
     });
 
     // Init route
     const currentStep = this.getStepFromHash();
 
     if (currentStep && this.find(currentStep)) {
-      this.go(currentStep);
+      this.goTo(currentStep);
     }
     else {
-      this.go(root.tutorial.selected);
+      this.goTo(root.tutorial.selected);
     }
   }
 
@@ -81,69 +82,75 @@ export default class Router {
   }
 
   /**
-   * Go to given route.
-   * @param id
+   * Deternmine whether the given route is valid.
+   *
+   * @param route
+   * @returns boolean
    */
-  go(id) {
-    // Remove active class from step.
-    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`);
-    if (activeStep) {
-      activeStep.classList.remove(CSS_CLASSES.stepSelected);
-    }
-
-    // Remove active class from nav item.
-    const activeNavItem = root.dom.nav.querySelector(`.${CSS_CLASSES.navItemSelected}`);
-    if (activeNavItem) {
-      activeNavItem
-        .classList.remove(CSS_CLASSES.navItemSelected);
-    }
-
-    // Activate new route.
-    this.activateRoute(id);
+  static isValid(route){
+    return (
+      route
+      && typeof route === 'object'
+      && route.hasOwnProperty('path')
+      && route.hasOwnProperty('step')
+    );
   }
 
   /**
-   * Activate given route
-   * @param id
+   * Change the current route with the given one.
+   * @param route route|string|number
    */
-  activateRoute(id) {
+  goTo(route) {
 
-    if (!id) {
-      return;
+    if (typeof route === 'string' || typeof route === 'number') {
+      route = this.find(route);
     }
 
-    let route = this.find(id);
-    route.domElement.classList.add(CSS_CLASSES.stepSelected);
-    root.dom.nav
-      .querySelector(`li[data-id="${id}"]`)
-      .classList.add(CSS_CLASSES.navItemSelected);
-    location.hash = route.path;
+    if (Router.isValid(route)) {
 
-    root.tutorial.minRemaining = parseInt(root.tutorial.duration);
-    root.dom.navItems.forEach((elem) => {
-      if (elem.dataset.id < id) {
-        elem.classList.add(CSS_CLASSES.navItemCompleted);
-        root.tutorial.minRemaining -= parseInt(root.tutorial.getStep(elem.dataset.id).duration);
+      // If the path is old update it and exit as this function will run again.
+      if (location.hash.split('#')[1] !== route.path) {
+        location.hash = route.path;
+        return;
       }
-      else {
-        elem.classList.remove(CSS_CLASSES.navItemCompleted);
+
+      // Set the current tutorial step.
+      root.tutorial.setActiveStep(route.step);
+
+      // Update nav items.
+      // First we remove the active class from the old item.
+      const activeNavItem = root.dom.nav.querySelector(`.${CSS_CLASSES.navItemSelected}`);
+      if (activeNavItem) {
+        activeNavItem
+          .classList.remove(CSS_CLASSES.navItemSelected);
       }
-    });
 
-    // Update remaining time in toolbar.
-    if (root.toolbar) {
-      root.toolbar.updateRemainingMinutes();
-    }
+      // Then we loop all the items to add or remove the 'completed' class on each one.
+      root.dom.navItems.forEach((elem) => {
+        if (elem.dataset.id < this.step) {
+          elem.classList.add(CSS_CLASSES.navItemCompleted);
+          root.tutorial.minRemaining -= parseInt(root.tutorial.getStep(elem.dataset.id).duration);
+        }
+        else {
+          elem.classList.remove(CSS_CLASSES.navItemCompleted);
+        }
+      });
 
-    // Update button states
-    if (root.dom.buttonPrev) {
-      root.dom.buttonPrev.disabled = (id === 1);
-    }
-    if (root.dom.buttonNext) {
-      root.dom.buttonNext.disabled = (id === this.routes.length);
-    }
+      // Update button states.
+      if (root.dom.buttonPrev) {
+        root.dom.buttonPrev.disabled = (route.step === 1);
+      }
+      if (root.dom.buttonNext) {
+        root.dom.buttonNext.disabled = (route.step === this.routes.length);
+      }
 
+      // Update remaining time in toolbar.
+      if (root.toolbar) {
+        root.toolbar.updateRemainingMinutes();
+      }
+    }
   }
+
 
 
   /**
@@ -177,39 +184,38 @@ export default class Router {
    */
   attachPagination() {
     // Footer template.
-    const footer = htmlElement(`
-      <footer>
+    const prev = htmlElement(`
         <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--prev">
             <span>${root.tutorial.prevText}</span>
         </button>
+    `);
+    const next = htmlElement(`
         <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--next">
             <span>${root.tutorial.nextText}</span>
         </button>
-      </footer>
     `);
 
     // Append footer and cache button elements.
-    root.dom.stepsWrapper.appendChild(footer);
+    root.dom.stepsWrapper.appendChild(prev);
+    root.dom.stepsWrapper.appendChild(next);
     root.dom.buttonPrev = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--prev`);
     root.dom.buttonNext = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--next`);
 
-    // Listen for clicks and go to step.
+    // Listen for clicks and updateCurrentRoute to step.
     root.dom.buttonPrev.addEventListener("click", () => {
       const activeStepId = this.getStepFromHash();
       if (activeStepId > 1) {
-        this.go(activeStepId - 1)
+        this.goTo(activeStepId - 1);
       }
     });
 
     root.dom.buttonNext.addEventListener("click", () => {
       const activeStepId = this.getStepFromHash();
       if (activeStepId < this.routes.length) {
-        this.go(activeStepId + 1)
+        this.goTo(activeStepId + 1);
       }
     });
   }
-
-
 
 }
 

@@ -1,32 +1,32 @@
-$nav-width: 260px;
-
 .tutorial-js {
   display: flex;
-  min-height: 100vh;
+  flex-direction: column;
+  flex-wrap: wrap;
   position: relative;
 
-  .tutorial-js__nav {
-    width: $nav-width;
+  @include tablet {
+    flex-direction: row;
+  }
 
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    transform: translateX(-$nav-width);
-    transition: all .4s ease;
-
+  .tutorial-js__header {
+    width: 100%;
     @include tablet {
-      transform: translateX(0);
-      position: relative;
+      flex: 0 0 100%;
+    }
+  }
+
+  .tutorial-js__nav {
+    width: 100%;
+    @include tablet {
+      flex: 0 0 33.3%;
+      max-width: 260px;
     }
   }
 
   .tutorial-js__steps {
-    transition: all .4s ease;
     width: 100%;
     @include tablet {
-      width: calc(100% - #{$nav-width});
+      flex: 0 0 66.6%;
     }
   }
 }
-

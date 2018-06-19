@@ -2,17 +2,13 @@ import toBoolean from "./utils/toBoolean";
 import Step from "./step";
 import Toolbar from "./toolbar";
 import Router from "./router";
-import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, root} from "./config";
+import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, CSS_CLASSES, root} from "./config";
 
 export default class Tutorial {
 
   constructor(options) {
 
-    console.log(TUTORIAL_DEFAULT_OPTIONS);
-
     options = Object.assign(TUTORIAL_DEFAULT_OPTIONS, options);
-
-    console.log(options);
 
     // Set tutorial properies.
     this.title = options.title;
@@ -84,4 +80,29 @@ export default class Tutorial {
     return typeof root.dom.steps !== 'undefined';
   }
 
+  /**
+   * Set the given step as active.
+   * @param id
+   */
+  setActiveStep(id) {
+
+    // Cache useful DOM nodes.
+    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`),
+      prevStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepOut}`);
+
+    // Remove the 'out' class from prev step.
+    if (prevStep) {
+      prevStep.classList.remove(CSS_CLASSES.stepOut);
+    }
+
+    // Add 'out' class and remove 'active' class from current step.
+    if (activeStep) {
+      activeStep.classList.add(CSS_CLASSES.stepOut);
+      activeStep.classList.remove(CSS_CLASSES.stepSelected);
+    }
+
+    // Activate new step.
+    this.getStep(id).enable();
+
+  }
 }

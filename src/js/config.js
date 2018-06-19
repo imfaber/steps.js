@@ -42,7 +42,9 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
  * @type {*}
  */
 export const CSS_CLASSES = {
+  header:           'tutorial-js__header',
   stepSelected:     'tutorial-js__step--selected',
+  stepOut:          'tutorial-js__step--out',
   navItemSelected:  'tutorial-js-nav__item--selected',
   navItemCompleted: 'tutorial-js-nav__item--completed',
   button:           'tutorial-js__button',
@@ -57,7 +59,7 @@ export const DOM_SELECTORS = {
   tutorialWrapper: '.tutorial-js',
   nav:             '.tutorial-js__nav',
   stepsWrapper:    '.tutorial-js__steps',
-  steps:           '.tutorial-js__steps section',
+  steps:           '.tutorial-js__steps > article',
   timeRemaining:   `.${CSS_CLASSES.timeRemaining}`,
 };
 

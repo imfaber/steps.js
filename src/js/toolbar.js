@@ -15,13 +15,13 @@ export default class Toolbar {
 
   attachToolbar () {
     const header = htmlElement(`
-      <header>
-        <h3>${root.tutorial.title}</h3>
+      <header class="${CSS_CLASSES.header}">
+        <h1>${root.tutorial.title}</h1>
         <div class="${CSS_CLASSES.timeRemaining}"><span></span></div>
       </header>  
     `);
 
-    root.dom.stepsWrapper.insertBefore(header, root.dom.steps[0]);
+    root.dom.tutorial.insertBefore(header, root.dom.nav);
     root.dom.minRemaining = root.dom.tutorial.querySelector(DOM_SELECTORS.timeRemaining);
     this.updateRemainingMinutes();
   }

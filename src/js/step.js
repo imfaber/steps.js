@@ -1,4 +1,4 @@
-import {DOM_SELECTORS} from "./config";
+import {DOM_SELECTORS, CSS_CLASSES, root} from "./config";
 
 export default class Step {
 
@@ -19,6 +19,18 @@ export default class Step {
     this.domElement = document.querySelector(`${DOM_SELECTORS.steps}[data-step="${this.step}"]`);
 
   }
+
+
+  /**
+   * Enable the step by setting the active classes.
+   */
+  enable() {
+    this.domElement.classList.add(CSS_CLASSES.stepSelected);
+    root.dom.nav
+      .querySelector(`li[data-id="${this.step}"]`)
+      .classList.add(CSS_CLASSES.navItemSelected);
+  }
+
 }
 
 
