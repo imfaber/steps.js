@@ -86,26 +86,66 @@ export default class Tutorial {
    */
   setActiveStep(id) {
 
-    // Cache useful DOM nodes.
-    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`),
-      prevStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepOut}`);
+    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`);
+    let from = null;
 
-    // Remove the 'out' class from prev step.
-    if (prevStep) {
-      prevStep.classList.remove(CSS_CLASSES.stepOut);
-    }
-
-    // Add 'out' class and remove 'active' class from current step.
+    //  Remove 'active' class from current step.
     if (activeStep) {
-      activeStep.classList.add(CSS_CLASSES.stepOut);
+      from = activeStep.dataset.step;
       activeStep.classList.remove(CSS_CLASSES.stepSelected);
     }
 
     // Activate new step.
     this.getStep(id).enable();
 
-    // Update remaining time in toolbar.
+    Tutorial.makeStepsTransition(from, id);
     Toolbar.updateRemainingMinutes();
+
+  }
+
+  /**
+   * Set right transition classes to each step depending whether
+   * the step is before or after the current one.
+   */
+  static makeStepsTransition(from, to) {
+    from = parseInt(from) || null;
+    to = parseInt(to)
+    let toNode = null;
+
+    // Add the transition class.
+    for (let i = 0; i < root.dom.steps.length; ++i) {
+      const step = root.dom.steps[i];
+      step.classList.remove(
+        CSS_CLASSES.stepTransitionBackward,
+        CSS_CLASSES.stepTransitionForward,
+        CSS_CLASSES.stepTransitionIn,
+        CSS_CLASSES.stepTransitionOut
+      );
+
+      // From
+      if (parseInt(step.dataset.step) === from) {
+        if (from < to) {
+          step.classList.add(CSS_CLASSES.stepTransitionBackward);
+        }
+        else {
+          step.classList.add(CSS_CLASSES.stepTransitionForward);
+        }
+        step.classList.add(CSS_CLASSES.stepTransitionOut);
+      }
+
+      // To
+      if (parseInt(step.dataset.step) === to && from) {
+        toNode = step;
+        if (from < to) {
+          step.classList.add(CSS_CLASSES.stepTransitionBackward);
+        }
+        else {
+          step.classList.add(CSS_CLASSES.stepTransitionForward);
+        }
+
+        setTimeout(() => step.classList.add(CSS_CLASSES.stepTransitionIn), 100);
+      }
+    }
   }
 
   /**

@@ -26,11 +26,11 @@ export default class Step {
    */
   enable() {
     this.domElement.classList.add(CSS_CLASSES.stepSelected);
+
     root.dom.nav
       .querySelector(`li[data-id="${this.step}"]`)
       .classList.add(CSS_CLASSES.navItemSelected);
   }
-
 }
 
 

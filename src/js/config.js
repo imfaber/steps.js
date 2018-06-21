@@ -42,13 +42,16 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
  * @type {*}
  */
 export const CSS_CLASSES = {
-  header:           'tutorial-js__header',
-  stepSelected:     'tutorial-js__step--selected',
-  stepOut:          'tutorial-js__step--out',
-  navItemSelected:  'tutorial-js-nav__item--selected',
-  navItemCompleted: 'tutorial-js-nav__item--completed',
-  button:           'tutorial-js__button',
-  timeRemaining:    'tutorial-js__time-remaining'
+  header:                 'tutorial-js__header',
+  stepSelected:           'tutorial-js__step--selected',
+  stepTransitionIn:       'tutorial-js__step-transition--in',
+  stepTransitionOut:      'tutorial-js__step-transition--out',
+  stepTransitionBackward: 'tutorial-js__step-transition--backward',
+  stepTransitionForward:  'tutorial-js__step-transition--forward',
+  navItemSelected:        'tutorial-js-nav__item--selected',
+  navItemCompleted:       'tutorial-js-nav__item--completed',
+  button:                 'tutorial-js__button',
+  timeRemaining:          'tutorial-js__time-remaining'
 };
 
 /**

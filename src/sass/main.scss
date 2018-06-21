@@ -3,7 +3,7 @@
 @import "default-variables";
 @import "mixins";
 @import "layout";
-
+@import "overlay";
 
 // On load hide non-selected steps.
 .tutorial-js__steps > article:not(.tutorial-js__step--selected) {

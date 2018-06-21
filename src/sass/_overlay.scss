@@ -1,0 +1,71 @@
+.tutorial-js--overlay {
+
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+
+  .tutorial-js__steps {
+    position: relative;
+
+    > article {
+
+      display: block !important;
+      position: absolute;
+      left: -2000vw;
+      top: 0;
+
+      &.tutorial-js__step-transition--in,
+      &.tutorial-js__step-transition--out {
+        transform: translateX(0);
+        left: 0;
+        transition: transform .6s ease;
+      }
+
+      &.tutorial-js__step--selected {
+        left: 0;
+
+        // When the active step steps in move to center.
+        &.tutorial-js__step-transition--in {
+          transform: translateX(0);
+        }
+      }
+
+      // From right to center
+      &.tutorial-js__step-transition--backward {
+        transform: translateX(150vw);
+      }
+
+      // From left to center
+      &.tutorial-js__step-transition--forward {
+        transform: translateX(-150vw);
+      }
+
+      // On step out reverse the direction
+      &.tutorial-js__step-transition--out {
+
+        // From center to left
+        &.tutorial-js__step-transition--backward {
+          transform: translateX(-150vw);
+        }
+
+        // From center to right
+        &.tutorial-js__step-transition--forward {
+          transform: translateX(150vw);
+        }
+      }
+    }
+
+    .tutorial-js__button {
+      position: absolute;
+      bottom: 0;
+
+      &.tutorial-js__button--prev {
+        left: 0;
+      }
+      &.tutorial-js__button--next {
+        right: 0;
+      }
+    }
+  }
+
+}
