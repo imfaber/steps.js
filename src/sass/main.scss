@@ -10,8 +10,13 @@
   display: none;
 }
 
+body {
+  padding: 50px;
+}
 
-
+body.tutorial-js-no-scroll {
+  overflow: hidden;
+}
 
 
 

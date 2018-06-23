@@ -1,8 +1,14 @@
+.tutorial-js-container {
+  position: relative;
+  top: 0;
+}
+
 .tutorial-js {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   position: relative;
+  transition: all .6s ease;
 
   @include tablet {
     flex-direction: row;
@@ -12,6 +18,33 @@
     width: 100%;
     @include tablet {
       flex: 0 0 100%;
+    }
+
+    button {
+      display: inline-block;
+      border: 0;
+      background: none;
+      padding: 0;
+      margin: 0;
+      width: 30px;
+      height: 30px;
+      cursor: pointer;
+
+      .icon {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        stroke-width: 0;
+        stroke: currentColor;
+        fill: currentColor;
+      }
+
+      .icon-enlarge {
+        display: inline-block;
+      }
+      .icon-arrow-left {
+        display: none;
+      }
     }
   }
 

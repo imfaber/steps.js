@@ -25,7 +25,10 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
   toolbar: true,
 
   // Whether to display the arrows.
-  pagination: true,
+  pagination: true, toolbar: true,
+
+  // Whether to show the tutorial as overlay.
+  overlay: false,
 
   // Pagination text.
   prevText: 'Previous',
@@ -34,6 +37,8 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
   // Last time the tutorial was updated
   lastUpdate: null,
 
+  // The animation speed (steps transition, overlay etc..)
+  animationSpeed: 600 // In milliseconds.
 
 };
 
@@ -42,6 +47,8 @@ export const TUTORIAL_DEFAULT_OPTIONS = {
  * @type {*}
  */
 export const CSS_CLASSES = {
+  container:              'tutorial-js-container',
+  overlay:                'tutorial-js-container--overlay',
   header:                 'tutorial-js__header',
   stepSelected:           'tutorial-js__step--selected',
   stepTransitionIn:       'tutorial-js__step-transition--in',
@@ -51,7 +58,8 @@ export const CSS_CLASSES = {
   navItemSelected:        'tutorial-js-nav__item--selected',
   navItemCompleted:       'tutorial-js-nav__item--completed',
   button:                 'tutorial-js__button',
-  timeRemaining:          'tutorial-js__time-remaining'
+  timeRemaining:          'tutorial-js__time-remaining',
+  noScroll:               'tutorial-js-no-scroll'
 };
 
 /**
@@ -64,5 +72,6 @@ export const DOM_SELECTORS = {
   stepsWrapper:    '.tutorial-js__steps',
   steps:           '.tutorial-js__steps > article',
   timeRemaining:   `.${CSS_CLASSES.timeRemaining}`,
+  overlayButton:   `.${CSS_CLASSES.header} button`,
 };
 
