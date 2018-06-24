@@ -33,10 +33,10 @@ export default class Router {
     const currentStep = Router.getStepFromHash();
 
     if (currentStep && this.find(currentStep)) {
-      this.goTo(currentStep);
+      this.goTo(currentStep, true);
     }
     else {
-      this.goTo(root.tutorial.selected);
+      this.goTo(root.tutorial.selected, true);
     }
   }
 
@@ -99,8 +99,9 @@ export default class Router {
   /**
    * Change the current route with the given one.
    * @param route route|string|number
+   * @param skipHashUpdate Whether update or not the location hash
    */
-  goTo(route) {
+  goTo(route, skipHashUpdate) {
 
     if (typeof route === 'string' || typeof route === 'number') {
       route = this.find(route);
@@ -109,7 +110,7 @@ export default class Router {
     if (Router.isValid(route)) {
 
       // If the path is old update it and exit as this function will run again.
-      if (location.hash.split('#')[1] !== route.path) {
+      if (location.hash.split('#')[1] !== route.path && !skipHashUpdate) {
         location.hash = route.path;
         return;
       }
