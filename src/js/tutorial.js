@@ -220,11 +220,11 @@ export default class Tutorial {
         tutorialContainer.style.top = `${viewportOffset.top}px`;
         tutorialContainer.style.left = `${viewportOffset.left}px`;
 
-        // Disable scroll on body and enable finally open overlay.
-        body.classList.add(CSS_CLASSES.noScroll);
+        // Open the overlay and disable body scroll.
         setTimeout(() => {
           tutorialContainer.style.transition = `all ${this.animationSpeed / 1000}s ease`;
           tutorialContainer.classList.add(CSS_CLASSES.overlay);
+          setTimeout(() => body.classList.add(CSS_CLASSES.noScroll), this.animationSpeed);
         }, 100);
       });
     }
