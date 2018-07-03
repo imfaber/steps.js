@@ -36,10 +36,15 @@
   -webkit-overflow-scrolling: touch;
 }
 
-@mixin overlay($offset: 0) {
+@mixin overlay($offset: 0, $fixed: true) {
   bottom: $offset;
   left: $offset;
-  position: absolute;
+  @if $fixed {
+    position: fixed;
+  }
+  @else {
+    position: absolute;
+  }
   right: $offset;
   top: $offset;
 }

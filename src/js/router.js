@@ -1,71 +1,64 @@
-import {DOM_SELECTORS, CSS_CLASSES, root} from "./config";
-import htmlElement from "./utils/createElementFromHTML";
+import {DOM, ClassName, Selector} from "./global";
+import Util from "./util";
+import Template from "./template";
 
 export default class Router {
 
-  constructor() {
+  constructor(tutorial) {
+
+    this._tutorial = tutorial;
 
     // Add path to routes.
-    this.routes = root.tutorial.steps.map(r => {
-      r.path = `step-${r.step}`;
+    this._routes = tutorial.steps.map(r => {
+      r.path = `step-${r.index}`;
       return r;
     });
 
-    // Create nav.
-    this.attachNav();
-
-    // Create pagination.
-    if (root.tutorial.pagination) {
-      this.attachPagination();
-    }
-
-    // Listen for hash changes.
-    window.addEventListener("hashchange", () => {
-      const route = this.findBy({
-        name:  'path',
-        value: location.hash.split('#')[1],
-      });
-
-      this.goTo(route);
-    });
-
-    // Init route
-    const currentStep = Router.getStepFromHash();
-
-    if (currentStep && this.find(currentStep)) {
-      this.goTo(currentStep, true);
-    }
-    else {
-      this.goTo(root.tutorial.selected, true);
-    }
+    this._setupDOM();
+    this._addEventListeners();
+    this._goTo(this.getStepFromFragment(), true);
   }
+
+  // Public
+
+  get routes() {
+    return this._routes;
+  }
+
+  // Private
 
   /**
    * Return the step number from the location hash
-   * @returns {int|null}
+   * @returns {int}
    */
-  static getStepFromHash() {
+  getStepFromFragment() {
+
+    let step = this._tutorial.getConfig('selected');
 
     if (!location.hash) {
-      return null;
-    }
-
-    const step = parseInt(location.hash.split('#')[1].replace('step-', ''));
-    if (Number.isInteger(step)) {
       return step;
     }
-    return null;
+
+    const stepFromFragment = parseInt(location.hash.split('#')[1].replace('step-', ''));
+    if (Number.isInteger(stepFromFragment)) {
+      return stepFromFragment;
+    }
+
+    return step;
   }
+
+
+  // Private
 
   /**
    * Find route by step ID.
-   * @param id
+   * @param index
    * @returns {*}
    */
-  find(id) {
-    return this.findBy({
-      name:  'step',
-      value: id,
+  _find(index) {
+    return this._findBy({
+      name:  'index',
+      value: index,
     });
   }
 
@@ -75,139 +68,129 @@ export default class Router {
    * @param value
    * @returns {*|T}
    */
-  findBy({name, value}) {
-    return this.routes.find(r => {
+  _findBy({name, value}) {
+    return this._routes.find(r => {
       return (r[name] === value);
     });
   }
 
   /**
-   * Deternmine whether the given route is valid.
-   *
-   * @param route
-   * @returns boolean
+   * Change the current route with the given one.
+   * @param route route|string|number
+   * @param skipFragmentUpdate Whether update or not the location hash
    */
-  static isValid(route){
-    return (
-      route
-      && typeof route === 'object'
-      && route.hasOwnProperty('path')
-      && route.hasOwnProperty('step')
-    );
+  _goTo(route, skipFragmentUpdate) {
+
+    if (typeof route === 'string' || typeof route === 'number') {
+      route = this._find(route);
+    }
+
+    // If the path is old update it and exit as this function will run again.
+    if (location.hash.split('#')[1] !== route.path && !skipFragmentUpdate) {
+      location.hash = route.path;
+      return;
+    }
+
+    // Set the current tutorial step.
+    this._tutorial.setActiveStep(route.index);
+
+    // Update nav items class names.
+    DOM.navItems.forEach((elem) => {
+      elem.classList.remove(ClassName.NAV_ITEM_SELECTED);
+
+      // Completed.
+      if (elem.dataset.index < route.index) {
+        elem.classList.add(ClassName.NAV_ITEM_COMPLETED);
+      }
+
+      // Selected.
+      else if (parseInt(elem.dataset.index) === route.index) {
+        elem.classList.add(ClassName.NAV_ITEM_SELECTED);
+        elem.classList.remove(ClassName.NAV_ITEM_COMPLETED);
+      }
+
+      // Others.
+      else {
+        elem.classList.remove(ClassName.NAV_ITEM_COMPLETED);
+      }
+    });
+
+    // Update button states.
+    if (DOM.buttonPrev) {
+      DOM.buttonPrev.disabled = (route.index === 1);
+    }
+    if (DOM.buttonNext) {
+      DOM.buttonNext.disabled = (route.index === this._routes.length);
+    }
+  }
+
+  _addEventListeners() {
+
+    // Listen for hash changes.
+    window.addEventListener("hashchange", () => {
+      const route = this._findBy({
+        name:  'path',
+        value: location.hash.split('#')[1],
+      });
+
+      this._goTo(route);
+    });
+
   }
 
   /**
-   * Change the current route with the given one.
-   * @param route route|string|number
-   * @param skipHashUpdate Whether update or not the location hash
+   * Create required DOM.
+   * @private
    */
-  goTo(route, skipHashUpdate) {
+  _setupDOM() {
+    // Create nav.
+    this._attachNav();
 
-    if (typeof route === 'string' || typeof route === 'number') {
-      route = this.find(route);
-    }
-
-    if (Router.isValid(route)) {
-
-      // If the path is old update it and exit as this function will run again.
-      if (location.hash.split('#')[1] !== route.path && !skipHashUpdate) {
-        location.hash = route.path;
-        return;
-      }
-
-      // Set the current tutorial step.
-      root.tutorial.setActiveStep(route.step);
-
-      // Update nav items.
-      // First we remove the active class from the old item.
-      const activeNavItem = root.dom.nav.querySelector(`.${CSS_CLASSES.navItemSelected}`);
-      if (activeNavItem) {
-        activeNavItem
-          .classList.remove(CSS_CLASSES.navItemSelected);
-      }
-
-      // Then we loop all the items to add or remove the 'completed' class on each one.
-      root.dom.navItems.forEach((elem) => {
-        if (elem.dataset.id < route.step) {
-          elem.classList.add(CSS_CLASSES.navItemCompleted);
-        }
-        else {
-          elem.classList.remove(CSS_CLASSES.navItemCompleted);
-        }
-      });
-
-      // Update button states.
-      if (root.dom.buttonPrev) {
-        root.dom.buttonPrev.disabled = (route.step === 1);
-      }
-      if (root.dom.buttonNext) {
-        root.dom.buttonNext.disabled = (route.step === this.routes.length);
-      }
+    // Create pagination.
+    if (this._tutorial.getConfig('pagination')) {
+      this._attachPagination();
     }
   }
-
-
 
   /**
    * Attach nav to DOM.
    */
-  attachNav() {
-    const aside = htmlElement(`
-       <aside class="${DOM_SELECTORS.nav.replace('.', '')}">
-          <nav>
-             <ul>
-                ${this.routes.map(route => `
-                   <li class="tutorial-js-nav__item" data-id="${route.step}">
-                      <a href="#${route.path}">
-                          <i>${route.step}</i>
-                          <span>${route.label}</span>
-                      </a>
-                   </li>
-                `).join('')}
-             </ul>
-          </nav>
-       </aside>
-    `);
-
-    root.dom.tutorial.insertBefore(aside, root.dom.stepsWrapper);
-    root.dom.nav = root.dom.tutorial.querySelector(DOM_SELECTORS.nav);
-    root.dom.navItems = root.dom.nav.querySelectorAll('li');
+  _attachNav() {
+    const navTemplate = Template.nav(this._routes),
+      nav = Util.createElement(navTemplate);
+    DOM.tutorial.insertBefore(nav, DOM.stepsWrapper);
+    DOM.nav = DOM.tutorial.querySelector(Selector.NAV);
+    DOM.navItems = DOM.nav.querySelectorAll('li');
   }
 
   /**
    * Attach pagination to DOM.
    */
-  attachPagination() {
+  _attachPagination() {
     // Footer template.
-    const prev = htmlElement(`
-        <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--prev">
-            <span>${root.tutorial.prevText}</span>
-        </button>
-    `);
-    const next = htmlElement(`
-        <button class="${CSS_CLASSES.button} ${CSS_CLASSES.button}--next">
-            <span>${root.tutorial.nextText}</span>
-        </button>
-    `);
+    const prevTemplate = Template.paginationButtonPrev(this._tutorial.getConfig('prevText')),
+     nextTemplate = Template.paginationButtonNext(this._tutorial.getConfig('nextText')),
+     prev = Util.createElement(prevTemplate),
+     next = Util.createElement(nextTemplate);
 
     // Append footer and cache button elements.
-    root.dom.stepsWrapper.appendChild(prev);
-    root.dom.stepsWrapper.appendChild(next);
-    root.dom.buttonPrev = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--prev`);
-    root.dom.buttonNext = root.dom.tutorial.querySelector(`.${CSS_CLASSES.button}--next`);
+    DOM.stepsWrapper.appendChild(prev);
+    DOM.stepsWrapper.appendChild(next);
+    DOM.buttonPrev = DOM.tutorial.querySelector(`.${ClassName.BUTTON}--prev`);
+    DOM.buttonNext = DOM.tutorial.querySelector(`.${ClassName.BUTTON}--next`);
 
     // Listen for clicks and updateCurrentRoute to step.
-    root.dom.buttonPrev.addEventListener("click", () => {
-      const activeStepId = Router.getStepFromHash();
+    DOM.buttonPrev.addEventListener("click", () => {
+      const activeStepId = this.getStepFromFragment();
       if (activeStepId > 1) {
-        this.goTo(activeStepId - 1);
+        this._goTo(activeStepId - 1);
       }
     });
 
-    root.dom.buttonNext.addEventListener("click", () => {
-      const activeStepId = Router.getStepFromHash();
+    DOM.buttonNext.addEventListener("click", () => {
+      const activeStepId = this.getStepFromFragment();
       if (activeStepId < this.routes.length) {
-        this.goTo(activeStepId + 1);
+        this._goTo(activeStepId + 1);
       }
     });
   }

@@ -1,252 +1,275 @@
-import toBoolean from "./utils/toBoolean";
-import Step from "./step";
+import Util from "./util";
+import {DOM, ClassName, Selector, Direction, EventName} from "./global";
 import Toolbar from "./toolbar";
 import Router from "./router";
-import {TUTORIAL_DEFAULT_OPTIONS, DOM_SELECTORS, CSS_CLASSES, root} from "./config";
+import Step from "./step";
+import Overlay from "./overlay";
+
+/**
+ * Tutorial default options.
+ *
+ * @type {*}
+ */
+const Default = {
+
+  // The title of the tutorial.
+  title: '',
+
+  // The selected step.
+  selected: 1,
+
+  // Whether to display the toolbar.
+  toolbar: true,
+
+  // Whether to display the arrows.
+  pagination: true,
+
+  // Whether allow overlay toggling.
+  overlayToggle: false,
+
+  // Whether the overlay is open by default
+  overlayOpen: false,
+
+  // Pagination text.
+  prevText: 'Previous',
+  nextText: 'Next',
+
+  // Time remaining text
+  timeRemainingText: 'MINUTES min remaining', // MINUTES gets replaced with actual minutes
+
+  timeRemaining: true,
+
+  // Last time the tutorial was updated
+  lastUpdate: null,
+
+  // The animation speed (steps transition, overlay etc..)
+  animationSpeed: 600 // In milliseconds.
+
+};
 
 export default class Tutorial {
 
-  constructor(options) {
+  constructor(element) {
 
-    options = Object.assign(TUTORIAL_DEFAULT_OPTIONS, options);
+    if (!element) {
+      return;
+    }
 
-    // Set tutorial properies.
-    this.title = options.title;
-    this.selected = parseInt(options.selected);
-    this.toolbar = toBoolean(options.toolbar);
-    this.pagination = toBoolean(options.pagination);
-    this.overlay = toBoolean(options.overlay);
-    this.prevText = options.prevText;
-    this.nextText = options.nextText;
-    this.animationSpeed = parseInt(options.animationSpeed);
-    this.duration = 0;
-    this.minRemaining = 0;
+    Util.dispatchEvent(element, EventName.INITIALIZE, null);
+
+    const options = Object.assign(Default, element.dataset);
+
+    // Create tutorial config object.
+    this._config = {
+      title:             options.title,
+      selected:          parseInt(options.selected),
+      toolbar:           Util.toBoolean(options.toolbar),
+      pagination:        Util.toBoolean(options.pagination),
+      overlayToggle:     Util.toBoolean(options.overlayToggle),
+      overlayOpen:       Util.toBoolean(options.overlayOpen),
+      overlayAnimation:  Util.toBoolean(options.overlayAnimation),
+      prevText:          options.prevText,
+      nextText:          options.nextText,
+      timeRemainingText: options.timeRemainingText,
+      timeRemaining:     Util.toBoolean(options.timeRemaining),
+      animationSpeed:    parseInt(options.animationSpeed),
+    };
+
+    this._duration = 0;
+    this._currentStepIndex = 0;
+    this._minRemaining = 0;
 
     // Cache tutorial DOM elements.
-    root.dom = {};
-    root.dom.tutorial = document.querySelector(DOM_SELECTORS.tutorialWrapper);
-    root.dom.stepsWrapper = root.dom.tutorial.querySelector(DOM_SELECTORS.stepsWrapper);
-    if (root.dom.stepsWrapper) {
-      root.dom.steps = root.dom.stepsWrapper.querySelectorAll(DOM_SELECTORS.steps);
-    }
-
-
-    // Add a wrapper useful for overlay
-    root.dom.tutorialContainer = document.createElement('div');
-    root.dom.tutorialContainer.classList.add(CSS_CLASSES.container);
-    root.dom.tutorial.parentNode.insertBefore(root.dom.tutorialContainer, root.dom.tutorial);
-    root.dom.tutorialContainer.appendChild(root.dom.tutorial);
-
-    // Cache tutorial.
-    root.tutorial = this;
+    DOM.tutorial = element;
+    DOM.stepsWrapper = DOM.tutorial.querySelector(Selector.STEPS_WRAPPER);
+    DOM.steps = DOM.tutorial.querySelectorAll(Selector.STEPS);
 
     // Do not continue if there are no steps.
-    if (!Tutorial.hasSteps()) return;
+    if (!DOM.steps.length) return;
+
+    // Add a wrapper useful for overlay
+    // DOM.tutorialContainer = Util.wrapElement(DOM.tutorial, `<div class="${ClassName.container}" />`);
 
     // Create steps.
-    this.steps = [];
-    for (let i = 0; i < root.dom.steps.length; ++i) {
-      root.dom.steps[i].dataset.id = `tutorial-js-step-${i}`;
-      this.steps.push(new Step(root.dom.steps[i].dataset));
-      this.duration += this.steps[i].duration;
-    }
+    this._steps = [];
+    Util.forEach(DOM.steps, (i, el) => {
+      this._steps.push(new Step(this, el, (i + 1)));
+      this._duration += parseInt(el.dataset.duration);
+    });
 
     // Init router.
-    root.router = new Router();
+    this._router = new Router(this);
 
-    // Init toolbar
-    if (this.toolbar) {
-      root.toolbar = new Toolbar();
+    // Init toolbar.
+    if (this._config.toolbar) {
+      this._toolbar = new Toolbar(this);
+    }
+
+    // Init overlay if toggling is enabled.
+    if (this._config.overlayToggle) {
+      this._overlay = new Overlay(this);
+    }
+
+  }
+
+  // Public
+
+  get steps() {
+    return this._steps;
+  }
+
+  get duration() {
+    return this._duration;
+  }
+
+  get router() {
+    return this._router;
+  }
+
+  get currentStepIndex() {
+    return this._currentStepIndex || null;
+  }
+
+  getConfig(name) {
+    return this._config[name];
+  }
+
+  /**
+   * Make the given step active.
+   * @param index
+   */
+  setActiveStep(index) {
+    const nextStep = this._getStep(index);
+
+    // Remove deselected class from all steps.
+    Util.forEach(document.querySelectorAll(Selector.DESELECTED_STEP), (i, elem) => {
+      elem.classList.remove(ClassName.DESELECTED_STEP);
+    });
+
+    let direction;
+
+    // Hide active/old step if there is one and show the new one.
+    if (this.currentStepIndex) {
+      direction = (this._currentStepIndex > nextStep.index) ? Direction.BACKWARD : Direction.FORWARD;
+      this._getStep(this.currentStepIndex).hide(direction);
+    }
+    nextStep.show(direction);
+    this._currentStepIndex = index;
+
+    if (this._toolbar) {
+      this._toolbar.updateRemainingMinutes();
     }
   }
+
+  // Private
 
   /**
    * Find and return the given step.
    *
-   * @param stepNumber
+   * @param index - The step number.
    * @returns {*}
    */
-  getStep(stepNumber) {
-    return this.steps.find(s => {
-      return (s.step === parseInt(stepNumber));
+  _getStep(index) {
+    return this._steps.find(s => {
+      return (s.index === parseInt(index));
     });
   }
 
-  /**
-   * Return the selected step.
-   * @returns {*}
-   */
-  getSelectedStep() {
-    return this.getStep(this.selected)
-  }
 
-  /**
-   * Check whether the tutorial has steps.
-   *
-   * @returns {boolean}
-   */
-  static hasSteps() {
-    return typeof root.dom.steps !== 'undefined';
-  }
+  // /**
+  //  * Toggle overlay.
+  //  *
+  //  * @todo this function is responsable of opening and closing the
+  //  * overlay with a zoom effect. At the moment is a bit of a mess
+  //  * and would need some refactoring.
+  //  */
+  // toggleOverlay() {
+  //   const body = document.querySelector('body'),
+  //     tutorialContainer = DOM.tutorialContainer;
+  //
+  //   // If overlay is true close it else open it.
+  //   if (this.overlay) {
+  //     tutorialContainer.classList.remove(CSS_CLASSES.overlay);
+  //     body.classList.remove(CSS_CLASSES.noScroll);
+  //     this.setContainerNaturalSize(() => {
+  //       document.documentElement.scrollTop = body.dataset.lastScrollTop;
+  //       // Restore old style after animation is completed.
+  //       setTimeout(() => {
+  //         document.querySelector(`.${CSS_CLASSES.container}--clone`).remove();
+  //         tutorialContainer.style.transition = null;
+  //         tutorialContainer.style.position = `relative`;
+  //         tutorialContainer.style.top = `${tutorialContainer.dataset.top}`;
+  //         tutorialContainer.style.left = `${tutorialContainer.dataset.left}`;
+  //         tutorialContainer.style.width = null;
+  //         tutorialContainer.style.height = null;
+  //       }, this.animationSpeed);
+  //     });
+  //
+  //   }
+  //
+  //   // Open overlay.
+  //   else {
+  //
+  //     // Store current position in dataset so we can restore it when the overlay gets closed.
+  //     const computedStyle = window.getComputedStyle(tutorialContainer, null);
+  //     tutorialContainer.dataset.top = computedStyle.getPropertyValue("top");
+  //     tutorialContainer.dataset.left = computedStyle.getPropertyValue("left");
+  //
+  //     // Set container natural size so we can animate the overlay
+  //     this.setContainerNaturalSize(() => {
+  //
+  //       // Store last scroll top position.
+  //       body.dataset.lastScrollTop = document.documentElement.scrollTop;
+  //
+  //       // Retrieve the position of the container in the viewport.
+  //       const viewportOffset = tutorialContainer.getBoundingClientRect();
+  //
+  //       // Create a container clone to use as hidden placeholder.
+  //       // This prevent the rest of the content to move when the container
+  //       // changes to position fixed.
+  //       const containerClone = tutorialContainer.cloneNode(true);
+  //       containerClone.style.visibility = 'hidden';
+  //       containerClone.classList.remove(CSS_CLASSES.container);
+  //       containerClone.classList.add(`${CSS_CLASSES.container}--clone`);
+  //       tutorialContainer.parentNode.insertBefore(containerClone, tutorialContainer);
+  //
+  //       // Set the position in the viewport so the container doesn't move when
+  //       // it changes to position fixed.
+  //       tutorialContainer.style.position = `fixed`;
+  //       tutorialContainer.style.top = `${viewportOffset.top}px`;
+  //       tutorialContainer.style.left = `${viewportOffset.left}px`;
+  //
+  //       // Open the overlay and disable body scroll.
+  //       setTimeout(() => {
+  //         tutorialContainer.style.transition = `all ${this.animationSpeed / 1000}s ease`;
+  //         tutorialContainer.classList.add(CSS_CLASSES.overlay);
+  //         setTimeout(() => body.classList.add(CSS_CLASSES.noScroll), this.animationSpeed);
+  //       }, 100);
+  //     });
+  //   }
+  //   this.overlay = !this.overlay;
+  // }
 
-  /**
-   * Set the given step as active.
-   * @param id
-   */
-  setActiveStep(id) {
+  // /**
+  //  * Toggle overlay.
+  //  */
+  // toggleOverlay() {
+  //   const body = document.body;
+  //
+  //   // If overlay is true close it else open it.
+  //   if (this.overlayOpen) {
+  //     body.classList.remove(CSS_CLASSES.noScroll);
+  //     body.classList.remove(`${CSS_CLASSES.overlay}-open`);
+  //   }
+  //   else {
+  //     body.classList.add(CSS_CLASSES.noScroll);
+  //     body.classList.add(`${CSS_CLASSES.overlay}-open`);
+  //   }
+  //
+  //   this.overlayOpen = !this.overlayOpen;
+  //
+  // }
 
-    const activeStep = root.dom.stepsWrapper.querySelector(`.${CSS_CLASSES.stepSelected}`);
-    let from = null;
-
-    //  Remove 'active' class from current step.
-    if (activeStep) {
-      from = activeStep.dataset.step;
-      activeStep.classList.remove(CSS_CLASSES.stepSelected);
-    }
-
-    // Activate new step.
-    this.getStep(id).enable();
-
-    Tutorial.makeStepsTransition(from, id);
-    Toolbar.updateRemainingMinutes();
-
-  }
-
-  /**
-   * Set right transition classes to each step depending whether
-   * the step is before or after the current one.
-   */
-  static makeStepsTransition(from, to) {
-    from = parseInt(from) || null;
-    to = parseInt(to)
-    let toNode = null;
-
-    // Add the transition class.
-    for (let i = 0; i < root.dom.steps.length; ++i) {
-      const step = root.dom.steps[i];
-      step.classList.remove(
-        CSS_CLASSES.stepTransitionBackward,
-        CSS_CLASSES.stepTransitionForward,
-        CSS_CLASSES.stepTransitionIn,
-        CSS_CLASSES.stepTransitionOut
-      );
-
-      // From
-      if (parseInt(step.dataset.step) === from) {
-        if (from < to) {
-          step.classList.add(CSS_CLASSES.stepTransitionBackward);
-        }
-        else {
-          step.classList.add(CSS_CLASSES.stepTransitionForward);
-        }
-        step.classList.add(CSS_CLASSES.stepTransitionOut);
-      }
-
-      // To
-      if (parseInt(step.dataset.step) === to && from) {
-        toNode = step;
-        if (from < to) {
-          step.classList.add(CSS_CLASSES.stepTransitionBackward);
-        }
-        else {
-          step.classList.add(CSS_CLASSES.stepTransitionForward);
-        }
-
-        setTimeout(() => step.classList.add(CSS_CLASSES.stepTransitionIn), 100);
-      }
-    }
-  }
-
-  /**
-   * Toggle overlay.
-   *
-   * @todo this function is responsable of opening and closing the
-   * overlay with a zoom effect. At the moment is a bit of a mess
-   * and would need some refactoring.
-   */
-  toggleOverlay() {
-    const body = document.querySelector('body'),
-      tutorialContainer = root.dom.tutorialContainer;
-
-    // If overlay is true close it else open it.
-    if (this.overlay) {
-      tutorialContainer.classList.remove(CSS_CLASSES.overlay);
-      body.classList.remove(CSS_CLASSES.noScroll);
-      this.setContainerNaturalSize(() => {
-        document.documentElement.scrollTop = body.dataset.lastScrollTop;
-        // Restore old style after animation is completed.
-        setTimeout(() => {
-          document.querySelector(`.${CSS_CLASSES.container}--clone`).remove();
-          tutorialContainer.style.transition = null;
-          tutorialContainer.style.position = `relative`;
-          tutorialContainer.style.top = `${tutorialContainer.dataset.top}`;
-          tutorialContainer.style.left = `${tutorialContainer.dataset.left}`;
-          tutorialContainer.style.width = null;
-          tutorialContainer.style.height = null;
-        }, this.animationSpeed);
-      });
-
-    }
-
-    // Open overlay.
-    else {
-
-      // Store current position in dataset so we can restore it when the overlay gets closed.
-      const computedStyle = window.getComputedStyle(tutorialContainer, null);
-      tutorialContainer.dataset.top = computedStyle.getPropertyValue("top");
-      tutorialContainer.dataset.left = computedStyle.getPropertyValue("left");
-
-      // Set container natural size so we can animate the overlay
-      this.setContainerNaturalSize(() => {
-
-        // Store last scroll top position.
-        body.dataset.lastScrollTop = document.documentElement.scrollTop;
-
-        // Retrieve the position of the container in the viewport.
-        const viewportOffset = tutorialContainer.getBoundingClientRect();
-
-        // Create a container clone to use as hidden placeholder.
-        // This prevent the rest of the content to move when the container
-        // changes to position fixed.
-        const containerClone = tutorialContainer.cloneNode(true);
-        containerClone.style.visibility = 'hidden';
-        containerClone.classList.remove(CSS_CLASSES.container);
-        containerClone.classList.add(`${CSS_CLASSES.container}--clone`);
-        tutorialContainer.parentNode.insertBefore(containerClone, tutorialContainer);
-
-        // Set the position in the viewport so the container doesn't move when
-        // it changes to position fixed.
-        tutorialContainer.style.position = `fixed`;
-        tutorialContainer.style.top = `${viewportOffset.top}px`;
-        tutorialContainer.style.left = `${viewportOffset.left}px`;
-
-        // Open the overlay and disable body scroll.
-        setTimeout(() => {
-          tutorialContainer.style.transition = `all ${this.animationSpeed / 1000}s ease`;
-          tutorialContainer.classList.add(CSS_CLASSES.overlay);
-          setTimeout(() => body.classList.add(CSS_CLASSES.noScroll), this.animationSpeed);
-        }, 100);
-      });
-    }
-    this.overlay = !this.overlay;
-  }
-
-  /**
-   * Return the remaining minutes to complete the tutorial.
-   * @returns {number|*}
-   */
-  getRemainingMinutes() {
-    let minRemaining = this.duration,
-      stepElem = null;
-
-    for (let i = 0; i < root.dom.steps.length; i++) {
-      stepElem = root.dom.steps[i];
-      if (stepElem.dataset.step < Router.getStepFromHash()) {
-        minRemaining -= parseInt(stepElem.dataset.duration);
-      }
-    }
-    return minRemaining;
-  }
 
   /**
    * Set natural size of the container.
@@ -254,7 +277,7 @@ export default class Tutorial {
    * @param callback
    */
   setContainerNaturalSize(callback) {
-    const container = root.dom.tutorialContainer;
+    const container = DOM.tutorialContainer;
     let w, h;
 
     // If overlay is on lets create a clone to get the size from.
@@ -286,4 +309,5 @@ export default class Tutorial {
       }
     }, 2);
   }
-};
+}
+

@@ -1,87 +1,172 @@
-.tutorial-js-container--overlay {
+.tutorialjs-overlay {
+  @include overlay();
+  display: none;
+  z-index: 1001;
 
-  position: fixed;
-  top: 0 !important;
-  left: 0 !important;
-  height: 100vh !important;
-  width: 100% !important;
-  overflow: hidden;
-  background: white;
-
-
-  .tutorial-js__header {
-    button {
-      .icon-enlarge {
-        display: none;
-      }
-      .icon-arrow-left {
-        display: block;
-      }
-    }
+  &.tutorialjs-animation {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    display: block;
+    transition: opacity .15s linear;
   }
+}
 
-  .tutorial-js__steps {
-    position: relative;
+.tutorialjs-overlay-backdrop {
+  @include overlay();
+  z-index: 1000;
+  background-color: #fff;
+  display: none;
 
-    > article {
+  &.tutorialjs-animation {
+    transition: opacity .15s linear;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    display: block;
+  }
+}
 
-      display: block !important;
-      position: absolute;
-      left: -2000vw;
-      top: 0;
 
-      &.tutorial-js__step-transition--in,
-      &.tutorial-js__step-transition--out {
-        transform: translateX(0);
-        left: 0;
-        transition: transform .6s ease;
-      }
-
-      &.tutorial-js__step--selected {
-        left: 0;
-
-        // When the active step steps in move to center.
-        &.tutorial-js__step-transition--in {
-          transform: translateX(0);
-        }
-      }
-
-      // From right to center
-      &.tutorial-js__step-transition--backward {
-        transform: translateX(150vw);
-      }
-
-      // From left to center
-      &.tutorial-js__step-transition--forward {
-        transform: translateX(-150vw);
-      }
-
-      // On step out reverse the direction
-      &.tutorial-js__step-transition--out {
-
-        // From center to left
-        &.tutorial-js__step-transition--backward {
-          transform: translateX(-150vw);
-        }
-
-        // From center to right
-        &.tutorial-js__step-transition--forward {
-          transform: translateX(150vw);
-        }
-      }
-    }
-
-    .tutorial-js__button {
-      position: absolute;
-      bottom: 0;
-
-      &.tutorial-js__button--prev {
-        left: 0;
-      }
-      &.tutorial-js__button--next {
-        right: 0;
-      }
+body.tutorialjs-overlay-open {
+  .tutorialjs-overlay,
+  .tutorialjs-overlay-backdrop {
+    &.tutorialjs-animation {
+      opacity: 1;
+      width: auto;
+      height: auto;
     }
   }
 
 }
+
+
+//.tutorialjs-container--overlay {
+//  position: fixed;
+//  top: 0 !important;
+//  left: 0 !important;
+//  height: 100vh !important;
+//  width: 100% !important;
+//  overflow: hidden;
+//  background: white;
+//
+//  .tutorialjs__steps {
+//
+//    > article {
+//      position: absolute;
+//      left: 0;
+//      top: 0;
+//
+//      &.tutorialjs__step-transition--in,
+//      &.tutorialjs__step-transition--out {
+//        transform: translateX(0);
+//      }
+//
+//      &.tutorialjs__step--selected {
+//        &.tutorialjs__step-transition--in {
+//          transform: translateX(0);
+//        }
+//      }
+//    }
+//
+//    .tutorialjs__button {
+//      position: fixed;
+//      bottom: 0;
+//
+//      @include tablet{
+//        &.tutorialjs__button--prev {
+//          left: $navMaxWidth + 0;
+//        }
+//      }
+//    }
+//  }
+//}
+//body.tutorialjs-no-scroll .tutorialjs {
+//  overflow-y: auto;
+//  overflow-x: hidden;
+//  height: 100vh;
+//  padding: $header-height 0 0;
+//  box-sizing: border-box;
+//
+//  .tutorialjs__header {
+//    position: fixed;
+//    top: 0;
+//    transition: translateX($navMaxWidth);
+//
+//    button {
+//      .icon-enlarge {
+//        display: none;
+//      }
+//      .icon-arrow-left {
+//        display: block;
+//      }
+//    }
+//  }
+//
+//  .tutorialjs__nav {
+//    @include mobile{
+//      position: fixed;
+//      top: 0;
+//      left: -$navMaxWidth;
+//      width: $navMaxWidth;
+//    }
+//  }
+//
+//  .tutorialjs__steps {
+//    position: relative;
+//
+//    > article {
+//      position: absolute;
+//      top: 0;
+//      left: 50%;
+//      max-width: 700px;
+//
+//      &[hidden] {
+//        display: none !important;
+//      }
+//
+//      //left: -2000vw;
+//      //top: 0;
+//
+//      &.tutorialjs__step-transition--in,
+//      &.tutorialjs__step-transition--out {
+//        transform: translateX(-50%);
+//        //left: 0;
+//      }
+//
+//      &.tutorialjs__step--selected {
+//        //left: 0;
+//
+//        // When the active step steps in move to center.
+//        &.tutorialjs__step-transition--in {
+//          transform: translateX(-50%);
+//        }
+//      }
+//
+//      // From right to center
+//      &.tutorialjs__step-transition--backward {
+//        transform: translateX(150vw);
+//      }
+//
+//      // From left to center
+//      &.tutorialjs__step-transition--forward {
+//        transform: translateX(-150vw);
+//      }
+//
+//      // On step out reverse the direction
+//      &.tutorialjs__step-transition--out {
+//
+//        // From center to left
+//        &.tutorialjs__step-transition--backward {
+//          transform: translateX(-150vw);
+//        }
+//
+//        // From center to right
+//        &.tutorialjs__step-transition--forward {
+//          transform: translateX(150vw);
+//        }
+//      }
+//    }
+//  }
+//
+//}

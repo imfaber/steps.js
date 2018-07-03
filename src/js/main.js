@@ -1,9 +1,10 @@
 import Tutorial from "./tutorial";
-import {DOM_SELECTORS} from "./config";
+import {Selector} from './global';
 
 // Init tutorial when DOM is ready.
 document.addEventListener("DOMContentLoaded", () => {
-  new Tutorial(document.querySelector(DOM_SELECTORS.tutorialWrapper).dataset);
+  const tutorial = new Tutorial(document.querySelector(Selector.TUTORIAL));
 });
+
 
 

@@ -30,8 +30,8 @@ export default {
   output: {
     file:      outputFile,
     format:    'iife',
-    sourceMap: true,
-    banner: `/**
+    sourcemap: true,
+    banner:    `/**
  * tutorial.min.js ${pkg.version}
  * MIT licensed
  *
