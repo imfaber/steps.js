@@ -1,0 +1,19 @@
+.stepsjs__steps {
+
+  > article {
+    margin: auto;
+    width: 100%;
+    display: block;
+
+    &[hidden] {
+      display: none;
+    }
+
+    pre {
+      width: 100%;
+      overflow: auto;
+    }
+  }
+
+}
+

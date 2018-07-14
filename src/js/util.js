@@ -89,13 +89,21 @@ export default {
    * @param  {object} detail - Custom detail information
    */
   dispatchEvent (target, type, detail) {
-    let event = new CustomEvent(type, {
-      bubbles:    true,
-      cancelable: true,
-      detail:     detail
-    });
+    try {
+      let event = new CustomEvent(type, {
+        bubbles:    true,
+        cancelable: true,
+        detail:     detail
+      });
+      target.dispatchEvent(event);
+    }catch (e) {
+      console.log(e, {
+        target: target,
+        type: type
+      });
+    }
 
-    target.dispatchEvent(event);
+
   },
 
 }

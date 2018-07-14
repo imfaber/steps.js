@@ -26,13 +26,13 @@ if (process.env.BUILD !== 'production') {
 }
 
 export default {
-  input:  'src/js/main.js',
+  input:  'src/js/index.js',
   output: {
     file:      outputFile,
     format:    'iife',
     sourcemap: true,
     banner:    `/**
- * tutorial.min.js ${pkg.version}
+ * steps.min.js ${pkg.version}
  * MIT licensed
  *
  * Copyright (C) 2018 Fabrizio Meinero, http://imfaber.me

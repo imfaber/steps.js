@@ -4,12 +4,12 @@ import Template from "./template";
 
 export default class Router {
 
-  constructor(tutorial) {
+  constructor(steps) {
 
-    this._tutorial = tutorial;
+    this._steps = steps;
 
     // Add path to routes.
-    this._routes = tutorial.steps.map(r => {
+    this._routes = steps.steps.map(r => {
       r.path = `step-${r.index}`;
       return r;
     });
@@ -33,7 +33,7 @@ export default class Router {
    */
   getStepFromFragment() {
 
-    let step = this._tutorial.getConfig('selected');
+    let step = this._steps.getConfig('selected');
 
     if (!location.hash) {
       return step;
@@ -91,20 +91,20 @@ export default class Router {
       return;
     }
 
-    // Set the current tutorial step.
-    this._tutorial.setActiveStep(route.index);
+    // Set the current steps step.
+    this._steps.setActiveStep(route.index);
 
     // Update nav items class names.
     DOM.navItems.forEach((elem) => {
       elem.classList.remove(ClassName.NAV_ITEM_SELECTED);
 
       // Completed.
-      if (elem.dataset.index < route.index) {
+      if (elem.dataset.id < route.index) {
         elem.classList.add(ClassName.NAV_ITEM_COMPLETED);
       }
 
       // Selected.
-      else if (parseInt(elem.dataset.index) === route.index) {
+      else if (parseInt(elem.dataset.id) === route.index) {
         elem.classList.add(ClassName.NAV_ITEM_SELECTED);
         elem.classList.remove(ClassName.NAV_ITEM_COMPLETED);
       }
@@ -147,7 +147,7 @@ export default class Router {
     this._attachNav();
 
     // Create pagination.
-    if (this._tutorial.getConfig('pagination')) {
+    if (this._steps.getConfig('pagination')) {
       this._attachPagination();
     }
   }
@@ -158,8 +158,8 @@ export default class Router {
   _attachNav() {
     const navTemplate = Template.nav(this._routes),
       nav = Util.createElement(navTemplate);
-    DOM.tutorial.insertBefore(nav, DOM.stepsWrapper);
-    DOM.nav = DOM.tutorial.querySelector(Selector.NAV);
+    DOM.stepsjs.insertBefore(nav, DOM.stepsWrapper);
+    DOM.nav = DOM.stepsjs.querySelector(Selector.NAV);
     DOM.navItems = DOM.nav.querySelectorAll('li');
   }
 
@@ -168,16 +168,16 @@ export default class Router {
    */
   _attachPagination() {
     // Footer template.
-    const prevTemplate = Template.paginationButtonPrev(this._tutorial.getConfig('prevText')),
-     nextTemplate = Template.paginationButtonNext(this._tutorial.getConfig('nextText')),
+    const prevTemplate = Template.paginationButtonPrev(this._steps.getConfig('prevText')),
+     nextTemplate = Template.paginationButtonNext(this._steps.getConfig('nextText')),
      prev = Util.createElement(prevTemplate),
      next = Util.createElement(nextTemplate);
 
     // Append footer and cache button elements.
     DOM.stepsWrapper.appendChild(prev);
     DOM.stepsWrapper.appendChild(next);
-    DOM.buttonPrev = DOM.tutorial.querySelector(`.${ClassName.BUTTON}--prev`);
-    DOM.buttonNext = DOM.tutorial.querySelector(`.${ClassName.BUTTON}--next`);
+    DOM.buttonPrev = DOM.stepsjs.querySelector(`.${ClassName.BUTTON}--prev`);
+    DOM.buttonNext = DOM.stepsjs.querySelector(`.${ClassName.BUTTON}--next`);
 
     // Listen for clicks and updateCurrentRoute to step.
     DOM.buttonPrev.addEventListener("click", () => {

@@ -12,7 +12,7 @@ const Default = {
 
 export default class Step {
 
-  constructor(tutorial, element, index) {
+  constructor(steps, element, index) {
 
     if (!element) {
       return;
@@ -21,7 +21,7 @@ export default class Step {
     // Merge with default values.
     const options = Object.assign(Default, element.dataset);
 
-    this._tutorial = tutorial;
+    this._steps = steps;
     this._index = parseInt(index);
     this._dom = element;
     this._label = options.label;
@@ -53,17 +53,22 @@ export default class Step {
       step: this._dom,
       direction: direction
     };
-    Util.dispatchEvent(DOM.tutorial, `${EventName.SHOW}.step`, eventDetail);
-    this._dom.classList.add(ClassName.SELECTED_STEP);
-    this._dom.classList.remove(ClassName.DESELECTED_STEP);
+    this._setHiddenAttribute(false);
+
+    Util.dispatchEvent(DOM.stepsjs, `${EventName.SHOW}.step`, eventDetail);
+    setTimeout(() => {
+    }, (this._steps.getConfig('overlay')) ? this._steps.getConfig('animationSpeed') : 0);
+
+    this._dom.classList.add(ClassName.STEP_SELECTED);
+    this._dom.classList.remove(ClassName.STEP_DESELECTED);
 
     DOM.nav
       .querySelector(`li[data-id="${this.index}"]`)
       .classList.add(ClassName.NAV_ITEM_SELECTED);
 
     setTimeout(() => {
-      Util.dispatchEvent(DOM.tutorial, `${EventName.SHOWN}.step`, eventDetail);
-    }, (this._tutorial.getConfig('overlay')) ? this._tutorial.getConfig('animationSpeed') : 0);
+      Util.dispatchEvent(DOM.stepsjs, `${EventName.SHOWN}.step`, eventDetail);
+    }, (this._steps.getConfig('overlay')) ? this._steps.getConfig('animationSpeed') : 0);
   }
 
   /**
@@ -76,14 +81,14 @@ export default class Step {
       direction: direction
     };
 
-    Util.dispatchEvent(DOM.tutorial, `${EventName.HIDE}.step`, eventDetail);
-    this._dom.classList.add(ClassName.DESELECTED_STEP);
-    this._dom.classList.remove(ClassName.SELECTED_STEP);
+    Util.dispatchEvent(DOM.stepsjs, `${EventName.HIDE}.step`, eventDetail);
+    this._dom.classList.add(ClassName.STEP_DESELECTED);
+    this._dom.classList.remove(ClassName.STEP_SELECTED);
 
     setTimeout(() => {
       this._setHiddenAttribute(true);
-      Util.dispatchEvent(DOM.tutorial, `${EventName.HIDDEN}.step`, eventDetail);
-    }, (this._tutorial.getConfig('overlay')) ? this._tutorial.getConfig('animationSpeed') : 0);
+      Util.dispatchEvent(DOM.stepsjs, `${EventName.HIDDEN}.step`, eventDetail);
+    }, (this._steps.getConfig('overlay')) ? this._steps.getConfig('animationSpeed') : 0);
   }
 
   /**

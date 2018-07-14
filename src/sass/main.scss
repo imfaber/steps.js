@@ -3,25 +3,12 @@
 @import "default-variables";
 @import "mixins";
 @import "layout";
-@import "overlay";
-@import "article";
+@import "steps";
 
-// On load hide non-selected steps.
-//.tutorialjs__steps > article:not(.tutorialjs__step--selected) {
-//  display: none;
-//}
-
-.tutorialjs__step--selected {
+.stepsjs__step--selected {
   display: block;
 }
 
 body {
   padding: 50px;
 }
-
-body.tutorialjs-no-scroll {
-  overflow: hidden;
-}
-
-
-

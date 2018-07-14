@@ -1,4 +1,4 @@
-export const NAME = 'tutorialjs';
+export const NAME = 'stepsjs';
 
 /**
  * Global object to cache DOM elements.
@@ -11,20 +11,16 @@ export let DOM = {};
  * @type {*}
  */
 export const ClassName = {
-  CONTAINER:              `${NAME}-container`,
-  HEADER:                 `${NAME}__header`,
-  NAV:                    `${NAME}__nav`,
-  STEP_SELECTED:          `${NAME}__step--selected`,
-  STEP_DESELECTEDP:        `${NAME}__step--deselected`,
-  stepTransitionBackward: `${NAME}__step-transition--backward`,
-  stepTransitionForward:  `${NAME}__step-transition--forward`,
-  NAV_ITEM_SELECTED:      `${NAME}-nav__item--selected`,
-  NAV_ITEM_COMPLETED:     `${NAME}-nav__item--completed`,
-  BUTTON:                 `${NAME}__button`,
-  TIME_REMAINING:         `${NAME}__time-remaining`,
-  OVERLAY:                `${NAME}-overlay`,
-  OVERLAY_BACKDROP:       `${NAME}-overlay-backdrop`,
-  NO_SCROLL:              `${NAME}-no-scroll`,
+  STEPSJS:            NAME,
+  HEADER:             `${NAME}__header`,
+  NAV:                `${NAME}__nav`,
+  STEPS_WRAPPER:      `${NAME}__steps`,
+  STEP_SELECTED:      `${NAME}__step--selected`,
+  STEP_DESELECTED:    `${NAME}__step--deselected`,
+  NAV_ITEM_SELECTED:  `${NAME}-nav__item--selected`,
+  NAV_ITEM_COMPLETED: `${NAME}-nav__item--completed`,
+  BUTTON:             `${NAME}__button`,
+  TIME_REMAINING:     `${NAME}__time-remaining`,
 };
 
 /**
@@ -32,14 +28,13 @@ export const ClassName = {
  * @type {*}
  */
 export const Selector = {
-  TUTORIAL:        `.${NAME}`,
+  STEPSJS:         `.${NAME}`,
   NAV:             `.${ClassName.NAV}`,
-  STEPS_WRAPPER:   `.${NAME}__steps`,
-  STEPS:           `.${NAME}__steps > article`,
-  STEP_SELECTED:   `.${NAME}__steps > article.${ClassName.STEP_SELECTED}`,
-  STEP_DESELECTEDP: `.${NAME}__steps > article.${ClassName.STEP_DESELECTEDP}`,
+  STEPS_WRAPPER:   `.${ClassName.STEPS_WRAPPER}`,
+  STEPS:           `.${NAME} article`,
+  STEP_SELECTED:   `.${NAME} article.${ClassName.STEP_SELECTED}`,
+  STEP_DESELECTED: `.${NAME} article.${ClassName.STEP_DESELECTED}`,
   TIME_REMAINING:  `.${ClassName.TIME_REMAINING}`,
-  OVERLAY_BUTTON:  `.${ClassName.HEADER} button`,
 };
 
 /**

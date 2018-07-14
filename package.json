@@ -1,10 +1,10 @@
 {
-  "name": "tutorial.js",
+  "name": "steps.js",
   "version": "1.0.0",
-  "description": "The HTML tutorial framework",
-  "homepage": "http://revealjs.com",
-  "subdomain": "revealjs",
-  "main": "dist/tutorial.js",
+  "description": "Steps.js is a HTML framework to organize content into steps for a structured and orderly page view",
+  "homepage": "",
+  "subdomain": "stepsjs",
+  "main": "dist/steps.js",
   "author": {
     "name": "Fabrizio Meinero",
     "email": "fabrizio@imfaber.me",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/imfaber/tutorial.js.git"
+    "url": "git://github.com/imfaber/steps.js.git"
   },
   "keywords": [],
   "license": "MIT",
@@ -56,8 +56,8 @@
     "watch": "rollup -c -w",
     "serve": "http-server -c-1 -o -a localhost",
     "start": "npm run serve | npm run watch | nswatch",
-    "sass": "node-sass src/sass/main.scss dist/tutorial.min.css --output-style compressed",
-    "sass:dev": "node-sass src/sass/main.scss dist/tutorial.css --output-style expanded --source-map true",
+    "sass": "node-sass src/sass/main.scss dist/steps.min.css --output-style compressed",
+    "sass:dev": "node-sass src/sass/main.scss dist/steps.css --output-style expanded --source-map true",
     "test": "BABEL_ENV=test mocha --require babel-core/register --recursive ./test",
     "test:watch": "BABEL_ENV=test mocha --require babel-core/register --recursive ./test --reporter min --watch"
   },
