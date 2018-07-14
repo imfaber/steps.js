@@ -8,19 +8,11 @@ export default class Overlay {
     this._isOpen = tutorial.getConfig('overlayOpen');
 
 
-    DOM.overlayBackdrop = append(document.body, `<div class="${ClassName.OVERLAY_BACKDROP}" />`);
-    let overlay = DOM.tutorial.cloneNode(true);
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('tabindex', '-1');
-    overlay.setAttribute('aria-hidden', 'true');
-    overlay.classList.add(CSS_CLASSES.overlay);
-    if (this.overlayAnimation) {
-      overlay.classList.add(CSS_CLASSES.animation);
-      DOM.overlayBackdrop.classList.add(CSS_CLASSES.animation);
-    }
-    DOM.overlay = document.body.appendChild(overlay);
+
 
   }
+
+  // Public
 
   toggle() {
     return this._isOpen ? this.close() : this.open();
@@ -30,6 +22,10 @@ export default class Overlay {
     if (this._isTransitioning || this._isOpen) {
       return
     }
+    
+    const size = this._tutorial.geSize();
+    DOM.tutorial.style.width = `${size.width}px`;
+    DOM.tutorial.style.height = `${size.height}px`;
 
     const body = document.body;
     body.classList.add(CSS_CLASSES.noScroll);
@@ -37,12 +33,18 @@ export default class Overlay {
     this.overlayOpen = true;
   }
 
+  // Private
 
   close() {
     const body = document.body;
     body.classList.remove(CSS_CLASSES.noScroll);
     body.classList.remove(`${CSS_CLASSES.overlay}-open`);
     this.overlayOpen = true;
+  }
+
+  _setupDOM () {
+    DOM.overlayBackdrop = Util.appendHTML(document.body, `<div class="${ClassName.OVERLAY_BACKDROP}" />`);
+
   }
 
 }

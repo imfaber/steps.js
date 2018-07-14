@@ -68,6 +68,20 @@ export default {
   },
 
   /**
+   * Append HTML to given element.
+   *
+   * @param {element} element - The element the HTML is appednded to.
+   * @param {string} html - The html to append
+   * @returns {*}
+   */
+  appendHTML(element, html) {
+    const newElem = this.createElement(html);
+    element.appendChild(newElem);
+    return newElem;
+  },
+
+
+  /**
    * Dispatch custom events.
    *
    * @param  {element} target - The target element

@@ -87,9 +87,6 @@ export default class Tutorial {
     // Do not continue if there are no steps.
     if (!DOM.steps.length) return;
 
-    // Add a wrapper useful for overlay
-    // DOM.tutorialContainer = Util.wrapElement(DOM.tutorial, `<div class="${ClassName.container}" />`);
-
     // Create steps.
     this._steps = [];
     Util.forEach(DOM.steps, (i, el) => {
@@ -272,42 +269,22 @@ export default class Tutorial {
 
 
   /**
-   * Set natural size of the container.
-   * By natural size we mean the size in its static/relative position.
-   * @param callback
+   * Get natural size of the tutorial container.
+   * By natural size we mean the size in its static/relative position (not overlay).
    */
-  setContainerNaturalSize(callback) {
-    const container = DOM.tutorialContainer;
-    let w, h;
-
-    // If overlay is on lets create a clone to get the size from.
-    if (this.overlay) {
-      const clone = container.cloneNode(true);
-      clone.style.position = 'relative';
-      clone.style.width = `auto`;
-      clone.style.height = `auto`;
-      container.parentNode.insertBefore(clone, container);
-      w = clone.offsetWidth;
-      h = clone.offsetHeight;
-      clone.remove();
-    }
-    else {
-      container.style.width = `auto`;
-      container.style.height = `auto`;
-      setTimeout(() => {
-        w = container.offsetWidth;
-        h = container.offsetHeight;
-      }, 1);
-    }
-
-    // Set the container size.
-    setTimeout(() => {
-      container.style.width = `${w}px`;
-      container.style.height = `${h}px`;
-      if (callback) {
-        setTimeout(() => callback(), 1);
-      }
-    }, 2);
+  geSize() {
+    const clone = DOM.tutorial.cloneNode(true);
+    clone.style.position = 'relative';
+    clone.style.width = `auto`;
+    clone.style.height = `auto`;
+    DOM.tutorial.parentNode.insertBefore(clone, container);
+    const size = {
+      width: clone.offsetWidth,
+      height: clone.offsetHeight,
+    };
+    clone.remove();
+    return size;
   }
+
 }
 
