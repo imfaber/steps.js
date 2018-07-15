@@ -31,9 +31,9 @@ export const Selector = {
   STEPSJS:         `.${NAME}`,
   NAV:             `.${ClassName.NAV}`,
   STEPS_WRAPPER:   `.${ClassName.STEPS_WRAPPER}`,
-  STEPS:           `.${NAME} article`,
-  STEP_SELECTED:   `.${NAME} article.${ClassName.STEP_SELECTED}`,
-  STEP_DESELECTED: `.${NAME} article.${ClassName.STEP_DESELECTED}`,
+  STEPS:           `.${NAME} .${ClassName.STEPS_WRAPPER} > *`,
+  STEP_SELECTED:   `.${NAME} .${ClassName.STEPS_WRAPPER} > .${ClassName.STEP_SELECTED}`,
+  STEP_DESELECTED: `.${NAME} .${ClassName.STEPS_WRAPPER} > .${ClassName.STEP_DESELECTED}`,
   TIME_REMAINING:  `.${ClassName.TIME_REMAINING}`,
 };
 

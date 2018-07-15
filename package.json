@@ -1,7 +1,7 @@
 {
   "name": "steps.js",
   "version": "1.0.0",
-  "description": "Steps.js is a HTML framework to organize content into steps for a structured and orderly page view",
+  "description": "Steps.js is an HTML framework to organize content into steps for a structured and orderly page view",
   "homepage": "",
   "subdomain": "stepsjs",
   "main": "dist/steps.js",

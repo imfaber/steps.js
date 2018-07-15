@@ -1,6 +1,6 @@
 .stepsjs__steps {
 
-  > article {
+  > *:not(button) {
     margin: auto;
     width: 100%;
     display: block;
@@ -13,6 +13,10 @@
       width: 100%;
       overflow: auto;
     }
+  }
+
+  .stepsjs__step--selected {
+    display: block;
   }
 
 }

@@ -157,9 +157,9 @@ class StepsJS {
 
     // Create a wrapper for the steps.
     DOM.stepsjs.innerHTML = `
-        <section class="${ClassName.STEPS_WRAPPER}">
+        <div class="${ClassName.STEPS_WRAPPER}">
             ${DOM.stepsjs.innerHTML}
-        </section>
+        </div>
     `;
 
     DOM.stepsWrapper = DOM.stepsjs.querySelector(Selector.STEPS_WRAPPER);
