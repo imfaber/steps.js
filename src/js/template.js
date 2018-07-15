@@ -21,25 +21,31 @@ export default {
     `;
   },
 
-  toolbar(stepsTitle) {
-    return `
-      <header class="${ClassName.HEADER}">
-        <button type="button" title="Overlay mode">
-          <svg class="icon icon-enlarge" viewBox="0 0 32 32">
-            <path d="M32 0h-13l5 5-6 6 3 3 6-6 5 5z"></path>
-            <path d="M32 32v-13l-5 5-6-6-3 3 6 6-5 5z"></path>
-            <path d="M0 32h13l-5-5 6-6-3-3-6 6-5-5z"></path>
-            <path d="M0 0v13l5-5 6 6 3-3-6-6 5-5z"></path>
-          </svg>
+  header() {
+    return `<header class="${ClassName.HEADER}"></header>`;
+  },
 
-          <svg class="icon icon-arrow-left" viewBox="0 0 32 32">
-            <path d="M12.586 27.414l-10-10c-0.781-0.781-0.781-2.047 0-2.828l10-10c0.781-0.781 2.047-0.781 2.828 0s0.781 2.047 0 2.828l-6.586 6.586h19.172c1.105 0 2 0.895 2 2s-0.895 2-2 2h-19.172l6.586 6.586c0.39 0.39 0.586 0.902 0.586 1.414s-0.195 1.024-0.586 1.414c-0.781 0.781-2.047 0.781-2.828 0z"></path>
-          </svg>
-        </button>
-        <h1 title="${stepsTitle}">${stepsTitle}</h1>
-        <div class="${ClassName.TIME_REMAINING}"><span></span></div>
-      </header>
-    `;
+  // header(stepsTitle) {
+  //   return `
+  //     <header class="${ClassName.HEADER}">
+  //       <h1 title="${stepsTitle}">${stepsTitle}</h1>
+  //       <div class="${ClassName.TIME_REMAINING}">
+  //           ${this.SVGIcon('clock')}
+  //           <span></span>
+  //       </div>
+  //     </header>
+  //   `;
+  // },
+
+  SVGIcon(icon) {
+    let SVGContent = '';
+
+    switch (icon) {
+      case 'clock':
+        SVGContent = `<path d="M20.586 23.414l-6.586-6.586v-8.828h4v7.172l5.414 5.414zM16 0c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16zM16 28c-6.627 0-12-5.373-12-12s5.373-12 12-12c6.627 0 12 5.373 12 12s-5.373 12-12 12z"></path>`;
+    }
+
+    return `<svg class="stepsjs-icon stepsjs-icon--${icon}">${SVGContent}</svg>`;
   },
 
   /**

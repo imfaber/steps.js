@@ -12,9 +12,13 @@
     width: 100%;
     display: flex;
     height: $header-height;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
 
     @include tablet {
       flex: 0 0 100%;
+      flex-direction: row;
     }
 
     h1 {
@@ -25,31 +29,13 @@
       text-overflow: ellipsis;
     }
 
-    button {
+    .stepsjs-icon {
       display: inline-block;
-      border: 0;
-      background: none;
-      padding: 0;
-      margin: 0;
-      width: 30px;
-      height: 30px;
-      cursor: pointer;
-
-      .icon {
-        display: inline-block;
-        width: 30px;
-        height: 30px;
-        stroke-width: 0;
-        stroke: currentColor;
-        fill: currentColor;
-      }
-
-      .icon-enlarge {
-        display: inline-block;
-      }
-      .icon-arrow-left {
-        display: none;
-      }
+      width: 32px;
+      height: 32px;
+      stroke-width: 0;
+      stroke: currentColor;
+      fill: currentColor;
     }
   }
 

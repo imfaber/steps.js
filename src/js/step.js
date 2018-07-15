@@ -1,5 +1,6 @@
 import {DOM, ClassName, EventName} from "./global";
 import Util from "./util";
+import readingTime from "./reading-time";
 
 /**
  * Step default options.
@@ -25,7 +26,7 @@ export default class Step {
     this._index = parseInt(index);
     this._dom = element;
     this._label = options.label;
-    this._duration = parseInt(options.duration);
+    this._duration = parseInt(options.duration) || Math.ceil(readingTime(element.innerHTML).minutes);
 
     this._setHiddenAttribute(true);
   }

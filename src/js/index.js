@@ -1,5 +1,5 @@
 import Util from "./util";
-import {NAME, DOM, ClassName, Selector, Direction, EventName} from "./global";
+import {DOM, ClassName, Selector, Direction, EventName} from "./global";
 import Toolbar from "./toolbar";
 import Router from "./router";
 import Step from "./step";
@@ -17,20 +17,19 @@ const Default = {
   // The selected step.
   selected: 1,
 
-  // Whether to display the toolbar.
-  toolbar: true,
-
-  // Whether to display the arrows.
-  pagination: true,
-
   // Pagination text.
   prevText: 'Previous',
   nextText: 'Next',
 
-  // Time remaining text
-  timeRemainingText: 'MINUTES min remaining', // MINUTES gets replaced with actual minutes
-
+  // Whether to display the arrows.
   timeRemaining: true,
+
+  // Time remaining text.
+  timeRemainingText: '@MINUTES min left', // @MINUTES gets replaced with actual minutes
+
+  // Whether to display the arrows.
+  pagination: true,
+
 };
 
 class StepsJS {
@@ -49,7 +48,6 @@ class StepsJS {
     this._config = {
       title:             options.title,
       selected:          parseInt(options.selected),
-      toolbar:           Util.toBoolean(options.toolbar),
       pagination:        Util.toBoolean(options.pagination),
       prevText:          options.prevText,
       nextText:          options.nextText,
@@ -68,18 +66,18 @@ class StepsJS {
 
     // Create steps.
     this._steps = [];
+    let step;
     Util.forEach(DOM.steps, (i, el) => {
-      this._steps.push(new Step(this, el, (i + 1)));
-      this._duration += parseInt(el.dataset.duration);
+      step = new Step(this, el, (i + 1));
+      this._steps.push(step);
+      this._duration += parseInt(step.duration);
     });
 
     // Init router.
     this._router = new Router(this);
 
     // Init toolbar.
-    if (this._config.toolbar) {
-      this._toolbar = new Toolbar(this);
-    }
+    this._toolbar = new Toolbar(this);
   }
 
   // Public
