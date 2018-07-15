@@ -15,13 +15,18 @@ plugins.push(babel(babelrc()));
 // Production
 if (process.env.BUILD === 'production') {
   outputFile = `${outputFile.slice(0, -3)}.min.js`;
-  plugins.push(uglify());
-}
-
-// Dev
-if (process.env.BUILD !== 'production') {
-  plugins.push(istanbul({
-    exclude: ['test/**/*', 'node_modules/**/*']
+  plugins.push(uglify({
+    output: {
+      comments: function(node, comment) {
+        const text = comment.value;
+        const type = comment.type;
+        if (type === "comment2") {
+          // multiline comment
+          return /@preserve|@license|@cc_on/i.test(text);
+        }
+      },
+      drop_console: true
+    }
   }));
 }
 
@@ -30,10 +35,10 @@ export default {
   output: {
     file:      outputFile,
     format:    'iife',
-    sourcemap: true,
+    sourcemap: (process.env.BUILD !== 'production'),
     banner:    `/**
  * steps.min.js ${pkg.version}
- * MIT licensed
+ * @license MIT
  *
  * Copyright (C) 2018 Fabrizio Meinero, http://imfaber.me
  */`,

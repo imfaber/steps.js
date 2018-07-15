@@ -27,7 +27,6 @@ export default class Step {
     this._dom = element;
     this._label = options.label;
     this._duration = parseInt(options.duration) || Math.ceil(readingTime(element.innerHTML).minutes);
-
     this._setHiddenAttribute(true);
   }
 
@@ -100,15 +99,6 @@ export default class Step {
     this._dom.hidden = value;
     this._dom.setAttribute('aria-hidden', value);
   }
-
-  // removeTransitionClasses () {
-  //   this._dom.classList.remove(
-  //     ClassName.stepTransitionBackward,
-  //     ClassName.stepTransitionForward,
-  //     ClassName.stepTransitionIn,
-  //     ClassName.stepTransitionOut
-  //   );
-  // }
 }
 
 
