@@ -1,4 +1,10 @@
 export default {
+
+  /**
+   * Turn input into a boolean value.
+   * @param input
+   * @returns {*}
+   */
   toBoolean(input) {
     if (typeof input === 'boolean') {
       return input;
@@ -9,24 +15,6 @@ export default {
     }
 
     return (input.toLowerCase() === 'true');
-  },
-
-  typeCheckConfig(componentName, config, configTypes) {
-    for (const property in configTypes) {
-      if (Object.prototype.hasOwnProperty.call(configTypes, property)) {
-        const expectedTypes = configTypes[property]
-        const value = config[property]
-        const valueType = value && Util.isElement(value)
-          ? 'element' : toType(value)
-
-        if (!new RegExp(expectedTypes).test(valueType)) {
-          throw new Error(
-            `${componentName.toUpperCase()}: ` +
-            `Option "${property}" provided type "${valueType}" ` +
-            `but expected type "${expectedTypes}".`)
-        }
-      }
-    }
   },
 
   /**
@@ -88,7 +76,7 @@ export default {
    * @param  {string} type - Custom event name
    * @param  {object} detail - Custom detail information
    */
-  dispatchEvent (target, type, detail) {
+  dispatchEvent(target, type, detail) {
     try {
       let event = new CustomEvent(type, {
         bubbles:    true,
@@ -96,14 +84,12 @@ export default {
         detail:     detail
       });
       target.dispatchEvent(event);
-    }catch (e) {
-      console.log(e, {
-        target: target,
-        type: type
-      });
+    } catch (e) {
+      // console.log(e, {
+      //   target: target,
+      //   type: type
+      // });
     }
-
-
   },
 
 }
