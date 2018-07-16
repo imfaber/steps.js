@@ -1,7 +1,7 @@
 import babel from 'rollup-plugin-babel';
 import babelrc from 'babelrc-rollup';
-import istanbul from 'rollup-plugin-istanbul';
 import {uglify}  from 'rollup-plugin-uglify';
+import resolve from 'rollup-plugin-node-resolve';
 
 let pkg = require('./package.json');
 let outputFile = pkg.main;
@@ -11,6 +11,9 @@ let plugins = [];
 
 // Add babel.
 plugins.push(babel(babelrc()));
+
+// Add rollup-plugin-node-resolve
+plugins.push(resolve());
 
 // Production
 if (process.env.BUILD === 'production') {
@@ -25,7 +28,6 @@ if (process.env.BUILD === 'production') {
           return /@preserve|@license|@cc_on/i.test(text);
         }
       },
-      drop_console: true
     }
   }));
 }

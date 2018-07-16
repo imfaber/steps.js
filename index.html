@@ -12,22 +12,17 @@
 
     <link rel="stylesheet" href="dist/steps.css">
     <script src="dist/steps.js"></script>
+    <!--<script src="dist/steps.min.js"></script>-->
 </head>
 <body>
 
-<p>
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-</p>
-<article class="stepsjs"
-     data-title="Build a tutorial with Steps.js"
-     data-pagination="true"
-     data-time-remaining-text="Time left: @MINUTES minutes"
-     data-prev-text="Back">
+<article class="stepsjs">
 
-    <!-- Any element in here is displayed as a step. -->
+    <h1>How to build a tutorial with Steps.js</h1>
+
+    <!-- Any element below here is displayed as a step. -->
 
     <section data-label="Overview">
-        <h1>Tutorial.js</h1>
         <h2>The HTML guided tutorial framework</h2>
         <p>In this tutorial you will create a fully working tutorial with Tutorial JS</p>
 
@@ -68,11 +63,31 @@
 
 </article>
 
-<p>
-    <br>
-    Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-</p>
 
+<script>
+  document.addEventListener("initialize.stepsjs", function (event) {
+    console.log('Initialize', event);
+  });
+
+  document.addEventListener("initialized.stepsjs", function (event) {
+    console.log('Initialized', event);
+  });
+
+  document.addEventListener("show.stepsjs.step", function (event) {
+    console.log('Step show', event);
+  });
+
+  document.addEventListener("shown.stepsjs.step", function (event) {
+    console.log('Step shown', event);
+  });
+
+  document.addEventListener("hide.stepsjs.step", function (event) {
+    console.log('Step hide', event);
+  });
+
+  document.addEventListener("hidden.stepsjs.step", function (event) {
+    console.log('Step hidden', event);
+  });
+</script>
 </body>
 </html>

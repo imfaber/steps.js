@@ -25,18 +25,6 @@ export default {
     return `<header class="${ClassName.HEADER}"></header>`;
   },
 
-  // header(stepsTitle) {
-  //   return `
-  //     <header class="${ClassName.HEADER}">
-  //       <h1 title="${stepsTitle}">${stepsTitle}</h1>
-  //       <div class="${ClassName.TIME_REMAINING}">
-  //           ${this.SVGIcon('clock')}
-  //           <span></span>
-  //       </div>
-  //     </header>
-  //   `;
-  // },
-
   SVGIcon(icon) {
     let SVGContent = '';
 

@@ -1,12 +1,11 @@
 import Util from "./util";
-import {DOM, Selector, ClassName} from "./global";
+import {DOM, Selector, ClassName, EventName} from "./global";
 import Template from "./template";
 
 export default class Toolbar {
 
-  constructor(steps) {
-    this._steps = steps;
-    this._minRemaining = steps.duration;
+  constructor(stepsjs) {
+    this._stepsjs = stepsjs;
     this._setupDOM();
     this._addEventListeners();
   }
@@ -14,17 +13,14 @@ export default class Toolbar {
   // Public.
 
   updateRemainingMinutes() {
-    this._minRemaining = this._steps.duration;
-    Util.forEach(this._steps.steps, (i, step) => {
-      if (step.index < this._steps.currentStepIndex) {
-        this._minRemaining -= parseInt(step.duration);
-      }
-    });
+    const minRemaining = this._stepsjs.minRemaining;
 
     if (DOM.minRemaining) {
-      DOM.minRemaining.innerHTML = this._steps.getConfig('timeRemainingText')
-        .replace('@MINUTES', this._minRemaining);
+      DOM.minRemaining.innerHTML = this._stepsjs.getConfig('timeRemainingText')
+        .replace('@MINUTES',  minRemaining);
     }
+
+    Util.dispatchEvent(DOM.stepsjs, `${EventName.CHANGED}.minRemaining`, {minRemaining: minRemaining});
   }
 
   // Private.
@@ -33,13 +29,11 @@ export default class Toolbar {
     const header = Util.createElement(Template.header());
 
     // Add title.
-    const stepsTitle = this._steps.getConfig('title');
-    if (stepsTitle) {
-      Util.appendHTML(header, `<h1 title="${stepsTitle}">${stepsTitle}</h1>`);
-    }
+    const stepsTitle = this._stepsjs.getConfig('title');
+    Util.appendHTML(header, `<h1 title="${stepsTitle}">${stepsTitle}</h1>`);
 
     // Add time left.
-    if (this._steps.getConfig('timeRemaining')) {
+    if (this._stepsjs.getConfig('timeRemaining')) {
       Util.appendHTML(header, `
         <div class="${ClassName.TIME_REMAINING}">
             ${Template.SVGIcon('clock')}

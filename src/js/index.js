@@ -11,9 +11,6 @@ import Step from "./step";
  */
 const Default = {
 
-  // The title of the steps.
-  title: '',
-
   // The selected step.
   selected: 1,
 
@@ -34,19 +31,41 @@ const Default = {
 
 class StepsJS {
 
-  constructor(element) {
+  constructor() {
+    this._element = null;
+    this._duration = 0;
+    this._currentStepIndex = 0;
+    this._minRemaining = 0;
+    this._initialized = false;
+  }
+
+  // Public
+
+  initialize(element) {
 
     if (!element) {
+      throw new Error('Cannot initialize StepsJS on undefined element.');
+    }
+
+    if (this._initialized) {
       return;
     }
 
     Util.dispatchEvent(element, EventName.INITIALIZE, null);
+    this._element = element;
 
-    const options = Object.assign(Default, element.dataset);
+    const options = Object.assign(Default, element.dataset),
+      titleElem = element.querySelector(`h1`),
+      title = (titleElem) ? titleElem.innerHTML : '';
+
+    // Remove title as it will be added to the toolbar.
+    if (titleElem) {
+      titleElem.remove();
+    }
 
     // Create steps config object.
     this._config = {
-      title:             options.title,
+      title:             title,
       selected:          parseInt(options.selected),
       pagination:        Util.toBoolean(options.pagination),
       prevText:          options.prevText,
@@ -55,11 +74,7 @@ class StepsJS {
       timeRemaining:     Util.toBoolean(options.timeRemaining),
     };
 
-    this._duration = 0;
-    this._currentStepIndex = 0;
-    this._minRemaining = 0;
-
-    this._setupDOM(element);
+    this._setupDOM();
 
     // Do not continue if there are no steps.
     if (!DOM.steps.length) return;
@@ -78,9 +93,14 @@ class StepsJS {
 
     // Init toolbar.
     this._toolbar = new Toolbar(this);
+
+    Util.dispatchEvent(element, EventName.INITIALIZED, null);
+    this._initialized = true;
   }
 
-  // Public
+  getConfig(name) {
+    return this._config[name];
+  }
 
   get steps() {
     return this._steps;
@@ -88,6 +108,16 @@ class StepsJS {
 
   get duration() {
     return this._duration;
+  }
+
+  get minRemaining() {
+    let minRemaining = this._duration;
+    Util.forEach(this._steps, (i, step) => {
+      if (step.index < this._currentStepIndex) {
+        minRemaining -= parseInt(step.duration);
+      }
+    });
+    return minRemaining;
   }
 
   get router() {
@@ -98,8 +128,8 @@ class StepsJS {
     return this._currentStepIndex || null;
   }
 
-  getConfig(name) {
-    return this._config[name];
+  get element () {
+    return this._element;
   }
 
   /**
@@ -120,12 +150,13 @@ class StepsJS {
     );
 
     // Hide active/old step if there is one and show the new one.
+    let direction;
     if (this.currentStepIndex) {
-      const direction = (this._currentStepIndex > nextStep.index) ? Direction.BACKWARD : Direction.FORWARD;
+      direction = (this._currentStepIndex > nextStep.index) ? Direction.BACKWARD : Direction.FORWARD;
       DOM.stepsWrapper.classList.add(`${ClassName.STEPS_WRAPPER}--${direction}`);
-      this._getStep(this.currentStepIndex).hide();
+      this._getStep(this.currentStepIndex).hide(direction);
     }
-    nextStep.show();
+    nextStep.show(direction);
     this._currentStepIndex = index;
 
     if (this._toolbar) {
@@ -149,11 +180,13 @@ class StepsJS {
 
   /**
    * Setup and cache StepsJS DOM elements
-   * @param element {element} - The StepJS element
    * @private
    */
-  _setupDOM(element ) {
-    DOM.stepsjs = element;
+  _setupDOM() {
+
+    // Cache element.
+    DOM.stepsjs = this._element;
+    DOM.stepsjs.classList.add(ClassName.STEPSJS);
 
     // Create a wrapper for the steps.
     DOM.stepsjs.innerHTML = `
@@ -167,9 +200,14 @@ class StepsJS {
   }
 }
 
+window.StepsJS = new StepsJS();
+
 // Init steps when DOM is ready.
 document.addEventListener("DOMContentLoaded", () => {
-  new StepsJS(document.querySelector(Selector.STEPSJS));
+  const elem = document.querySelector(Selector.STEPSJS);
+  if (elem) {
+    window.StepsJS.initialize(elem)
+  }
 });
 
 

@@ -95,7 +95,7 @@ export default class Router {
     this._steps.setActiveStep(route.index);
 
     // Update nav items class names.
-    DOM.navItems.forEach((elem) => {
+    Util.forEach(DOM.navItems, (i, elem) => {
       elem.classList.remove(ClassName.NAV_ITEM_SELECTED);
 
       // Completed.

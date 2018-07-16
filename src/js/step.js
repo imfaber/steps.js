@@ -25,6 +25,7 @@ export default class Step {
     this._steps = steps;
     this._index = parseInt(index);
     this._dom = element;
+    this._dom.dataset.stepsjsIndex = this._index;
     this._label = options.label;
     this._duration = parseInt(options.duration) || Math.ceil(readingTime(element.innerHTML).minutes);
     this._setHiddenAttribute(true);
